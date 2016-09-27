@@ -19,7 +19,7 @@ namespace Calculator
 
         private void button2_Click(object sender, EventArgs e)
         {
-            button2.Visible = false;
+            textBox1.Text = "Hello world";
         }
     }
 }
