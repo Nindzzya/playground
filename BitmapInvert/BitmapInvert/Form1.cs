@@ -28,7 +28,7 @@ namespace BitmapInvert
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                dlg.Title = "Open Image";
+                dlg.Title = "Open Bitmap";
                 dlg.Filter = "bmp files (*.bmp)|*.bmp";
 
                 if (dlg.ShowDialog() == DialogResult.OK)
