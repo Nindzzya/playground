@@ -42,6 +42,7 @@ namespace iotX_Backend_Test
         }
         public static async Task<string> createLinktoHub()
         {
+            //testing a commit
             var dialogsResponse = await getDialogs();
             var dResult = dialogsResponse.RawData;
             var json = (JObject)JsonConvert.DeserializeObject(dResult);
