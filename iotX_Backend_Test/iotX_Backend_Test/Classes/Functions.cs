@@ -28,4 +28,22 @@ namespace iotX_Backend_Test.Classes
         public int LIGHT_INTENSITY { get; set; }
         public int EXT_LUX_LEVEL { get; set; }
     }
+
+    public class FunctionsHelper
+    {
+        public static object getDataType(string keyword)
+        {
+            switch(keyword)
+            {
+                case "FLOW":
+                    return new FlowFunctions();
+                case "WIND":
+                    return new WindFunctions();
+                case "LIGHT":
+                    return new LightFunctions();
+                default:
+                    return new FunctionsBase();                   
+            }
+        }
+    }
 }
