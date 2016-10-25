@@ -69,7 +69,6 @@ namespace iotX_Backend_Test
 
         public static async void startTranmission()
         {
-
             if (dId == null)
                 dId = await createLinktoHub();
             privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(19212587, dId);
