@@ -13,6 +13,10 @@ namespace BitmapInvert
 {
     public partial class Form1 : Form
     {
+        private object originalBmp;
+
+        public object X { get; private set; }
+
         public Form1()
         {
             InitializeComponent();
@@ -23,7 +27,7 @@ namespace BitmapInvert
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void button1_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -36,6 +40,16 @@ namespace BitmapInvert
                     pictureBox1.Image = new Bitmap(dlg.FileName);
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Bitmap invertedBmp = null;
+            invertedBmp = new Bitmap(originalBmp.width, originalBmp.height);
+
+
+        
+         
         }
     }
 }
