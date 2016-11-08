@@ -244,3 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /BitmapInvert.zip
+/iotX_Backend_Test/iotX_Backend_Test/Keys.cs
