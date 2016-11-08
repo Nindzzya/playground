@@ -64,14 +64,14 @@ namespace BitmapInvert
             pictureBox1.Image = new Bitmap(invertedImg);
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Bitmap invertedBmp = null;
-            invertedBmp = new Bitmap(originalBmp.width, originalBmp.height);
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    Bitmap invertedBmp = null;
+        //    invertedBmp = new Bitmap(originalBmp.width, originalBmp.height);
 
 
         
          
-        }
+        //}
     }
 }
