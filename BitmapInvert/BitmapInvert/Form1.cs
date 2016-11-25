@@ -24,7 +24,7 @@ namespace BitmapInvert
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public void button1_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -63,5 +63,15 @@ namespace BitmapInvert
             bitmapImg = invertedImg;
             pictureBox1.Image = new Bitmap(invertedImg);
         }
+
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    Bitmap invertedBmp = null;
+        //    invertedBmp = new Bitmap(originalBmp.width, originalBmp.height);
+
+
+        
+         
+        //}
     }
 }
