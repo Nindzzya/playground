@@ -27,24 +27,23 @@ namespace iotX_Client_0
         public MainPage()
         {
             this.InitializeComponent();
-
+            initX();
         }
 
-        private async void button_Tapped(object sender, TappedRoutedEventArgs e)
+        public async void initX()
         {
             MainInstance.Init();
-           await MainInstance.SignUp("lumia_1", "lumia_1@iotx.com", "95123456");
+            await MainInstance.SignUp("lumia_1", "lumia_1@iotx.com", "95123456");
             MainInstance.startTranmission();
+            statusTbl.Text = "Done!";
         }
 
-        private void button2_Tapped(object sender, TappedRoutedEventArgs e)
+        public async void GPIOStatusSet(object sender, RoutedEventArgs e)
         {
-            MainInstance.sendMessage();
+            var obj = sender as ToggleSwitch;
+            MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), obj.IsOn);
         }
 
-        private void GPIO1_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            MainInstance.setGPIOstatus((sender as Button).Name);
-        }
+
     }
 }

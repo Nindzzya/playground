@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -23,20 +25,29 @@ namespace iotX_Backend_Test
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        
-        
+
+        public static ObservableCollection<bool> GPIOStatus = new ObservableCollection<bool>() { false, false, false, false };
         public MainPage()
         {
             this.InitializeComponent();
             MainInstance.Init();
             MainInstance.MessageBody = new System.Collections.ObjectModel.ObservableCollection<string>();
-            statusBox.ItemsSource = MainInstance.MessageBody;
+            InitX();
         }
 
-        private async void Grid_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void InitX()
         {            
             await MainInstance.SignIn("kesavaprasadarul@outlook.com", "95123456");
             MainInstance.startTranmission();
+            statusBlock.Text = "Done!";
         }
+        public void ToggleSwitch(int pin)
+        {
+            Type classType = this.GetType();
+            FieldInfo info = classType.GetField("GPIO"+pin);
+            var obj = info.GetValue(this);
+            (obj as ToggleSwitch).IsOn = !(obj as ToggleSwitch).IsOn;
+        }
+
     }
 }

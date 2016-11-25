@@ -5,14 +5,20 @@
     xmlns:local="using:iotX_Client_0"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    RequestedTheme="Default">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="button" Content="Button" HorizontalAlignment="center" VerticalAlignment="Center" Tapped="button_Tapped"/>
-        <Button x:Name="button2" Content="Send" Tapped="button2_Tapped"/>
-        <StackPanel>
-            <Button x:Name="GPIO1" Content="1" Tapped="GPIO1_Tapped"/>
-            <Button x:Name="GPIO2" Content="2" Tapped="GPIO1_Tapped"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="statusTbl" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0"/>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Stretch">
+            <ToggleSwitch Name="GPIO1" Header="Pin1" Tag="1" Toggled="GPIOStatusSet"/>
+            <ToggleSwitch Name="GPIO2" Header="Pin2" Tag="2" Toggled="GPIOStatusSet"/>
+            <ToggleSwitch Name="GPIO3" Header="Pin3" Tag="3" Toggled="GPIOStatusSet"/>
+            <ToggleSwitch Name="GPIO4" Header="Pin4" Tag="4" Toggled="GPIOStatusSet"/>
+        </StackPanel>        
     </Grid>
 </Page>

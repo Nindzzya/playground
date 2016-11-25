@@ -4,6 +4,9 @@ using Quickblox.Sdk.Modules.UsersModule.Requests;
 using Quickblox.Sdk.Modules.ChatXmppModule;
 using System.Collections.ObjectModel;
 using Windows.ApplicationModel.Core;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace iotX_Backend_Test
 {
@@ -40,9 +43,14 @@ namespace iotX_Backend_Test
                 var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;
                 var friendlyName = messageEventArgs.Message.SenderId;
                 var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+                var dMessage =(JObject) JsonConvert.DeserializeObject(message);
+                if (dMessage["Type"].ToString() == "setGPIOstatus")
+                {
+                    MainPage.GPIOStatus[int.Parse(dMessage["GPIOPin"].ToString())-1] = (bool)dMessage["bit"];
+                }
                  dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                  {
-                     MessageBody.Add("Got Message from " + friendlyName + ": " + message);
+                     MessageBody.Add(message);
                  }
                 );
             };

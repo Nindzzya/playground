@@ -10,6 +10,7 @@ using Quickblox.Sdk.GeneralDataModel.Response;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Quickblox.Sdk.Modules.ChatXmppModule;
+using Windows.ApplicationModel.Core;
 
 namespace iotX_Backend_Test
 {
@@ -78,9 +79,20 @@ namespace iotX_Backend_Test
             toSend.Date = DateTime.Now;
             toSend.Type = "Init";
             privateChatManagerX.SendMessage(JsonConvert.SerializeObject(toSend));
+            quickbloxClient.ChatXmppClient.MessageReceived += (object sender, MessageEventArgs messageEventArgs) =>
+            {
+                var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;
+                var friendlyName = messageEventArgs.Message.SenderId;
+                var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+                dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+
+                }
+               );
+            };
         }
 
-        public static async void setGPIOstatus(string args)
+        public static async void setGPIOstatus(int GPIOPin, bool bit)
         {
             if (dId == null)
                 dId = await createLinktoHub();
@@ -89,7 +101,8 @@ namespace iotX_Backend_Test
             toSend.FriendlyName = user.FullName;
             toSend.Date = DateTime.Now;
             toSend.Type = "setGPIOstatus";
-            toSend.Args = args;            
+            toSend.GPIOPin = GPIOPin;
+            toSend.bit = bit;        
             privateChatManagerX.SendMessage(JsonConvert.SerializeObject(toSend));
         }
 
