@@ -10,6 +10,9 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button x:Name="button" Content="Button" HorizontalAlignment="center" VerticalAlignment="Center" Tapped="button_Tapped"/>
         <Button x:Name="button2" Content="Send" Tapped="button2_Tapped"/>
-
+        <StackPanel>
+            <Button x:Name="GPIO1" Content="1" Tapped="GPIO1_Tapped"/>
+            <Button x:Name="GPIO2" Content="2" Tapped="GPIO1_Tapped"/>
+        </StackPanel>
     </Grid>
 </Page>

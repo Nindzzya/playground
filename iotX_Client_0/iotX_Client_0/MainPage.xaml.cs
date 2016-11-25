@@ -41,5 +41,10 @@ namespace iotX_Client_0
         {
             MainInstance.sendMessage();
         }
+
+        private void GPIO1_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            MainInstance.setGPIOstatus((sender as Button).Name);
+        }
     }
 }
