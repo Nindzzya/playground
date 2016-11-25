@@ -9,6 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button x:Name="button" Content="Button" HorizontalAlignment="center" VerticalAlignment="Center" Tapped="button_Tapped"/>
+        <Button x:Name="button2" Content="Send" Tapped="button2_Tapped"/>
 
     </Grid>
 </Page>

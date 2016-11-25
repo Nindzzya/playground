@@ -28,12 +28,14 @@ namespace iotX_Backend_Test
         public MainPage()
         {
             this.InitializeComponent();
+            MainInstance.Init();
+            MainInstance.MessageBody = new System.Collections.ObjectModel.ObservableCollection<string>();
+            statusBox.ItemsSource = MainInstance.MessageBody;
         }
 
         private async void Grid_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            MainInstance.Init();
-            await MainInstance.SignUp("iotEmu1", "iotE1@iotx.com", "95123456");
+        {            
+            await MainInstance.SignIn("kesavaprasadarul@outlook.com", "95123456");
             MainInstance.startTranmission();
         }
     }

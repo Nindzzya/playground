@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,11 +30,16 @@ namespace iotX_Client_0
 
         }
 
-        private void button_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void button_Tapped(object sender, TappedRoutedEventArgs e)
         {
             MainInstance.Init();
-            await MainInstance.SignUp("iotEmu1", "iotE1@iotx.com", "95123456");
+           await MainInstance.SignUp("lumia_1", "lumia_1@iotx.com", "95123456");
             MainInstance.startTranmission();
+        }
+
+        private void button2_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            MainInstance.sendMessage();
         }
     }
 }

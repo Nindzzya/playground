@@ -74,14 +74,36 @@ namespace iotX_Backend_Test
             privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(19212587, dId);
             privateChatManagerX.MessageReceived += ChatManager_MessageReceived;
             dynamic toSend = new JObject();
+            toSend.FriendlyName = user.FullName;
             toSend.Date = DateTime.Now;
             toSend.Type = "Init";
-            toSend.FriendlyName = user.FullName;
-            toSend.Status = "Success";
-            toSend.Waiting = "1";
             privateChatManagerX.SendMessage(JsonConvert.SerializeObject(toSend));
         }
 
+        public static async void setGPIOstatus(string args)
+        {
+            if (dId == null)
+                dId = await createLinktoHub();
+            privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(19212587, dId);
+            dynamic toSend = new JObject();
+            toSend.FriendlyName = user.FullName;
+            toSend.Date = DateTime.Now;
+            toSend.Type = "setGPIOstatus";
+            toSend.Args = args;            
+            privateChatManagerX.SendMessage(JsonConvert.SerializeObject(toSend));
+        }
+
+        public static async void sendMessage()
+        {
+            if (dId == null)
+                dId = await createLinktoHub();
+            dynamic toSend = new JObject();
+            toSend.FriendlyName = user.FullName;
+            toSend.Date = DateTime.Now;
+            toSend.Type = "setGPIOstatus";
+          //  toSend.Args = "Hello";
+            privateChatManagerX.SendMessage(JsonConvert.SerializeObject(toSend));
+        }
 
         private static void ChatManager_MessageReceived(object sender, MessageEventArgs messageEventArgs)
         {
