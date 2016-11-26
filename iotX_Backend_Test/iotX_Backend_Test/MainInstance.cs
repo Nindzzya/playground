@@ -8,11 +8,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System;
+using Windows.Devices.Gpio;
+using System.Diagnostics;
 
 namespace iotX_Backend_Test
 {
     public class MainInstance
     {
+        GpioController gpio;
+        static GpioPin[] pin = new GpioPin[4];
         public static UserRequest user { get; set; }
         public static string dId { get; set; }
         public static int recId { get; set; }
@@ -35,31 +39,53 @@ namespace iotX_Backend_Test
                 var loginResponse = await quickbloxClient.AuthenticationClient.ByEmailAsync(Email, Password);
                 var y = await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
             }
-
+            InitGPIO();
         }
 
         public static async void startTranmission()
         {
-            quickbloxClient.ChatXmppClient.MessageReceived +=  (object sender, MessageEventArgs messageEventArgs) =>
+            quickbloxClient.ChatXmppClient.MessageReceived += async (object sender, MessageEventArgs messageEventArgs) =>
+           {
+               var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;
+               var friendlyName = messageEventArgs.Message.SenderId;
+               var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+               var dMessage = (JObject)JsonConvert.DeserializeObject(message);
+               await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    if (dMessage["Type"].ToString() == "setGPIOstatus")
+                    {
+                        setGPIO(dMessage);                        
+                    }
+                    if (dMessage["Type"].ToString() == "Init")
+                    {
+                        newOnline(friendlyName);
+                    }
+                }
+              );
+
+           };
+        }
+        private static void InitGPIO()
+        {
+            var gpio = GpioController.GetDefault();
+
+            if (gpio == null)
             {
-                var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;
-                var friendlyName = messageEventArgs.Message.SenderId;
-                var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-                var dMessage =(JObject) JsonConvert.DeserializeObject(message);
-                 dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                 {
-                     if (dMessage["Type"].ToString() == "setGPIOstatus")
-                     {
-                         setGPIO(dMessage);
-                     }
-                     if (dMessage["Type"].ToString() == "Init")
-                     {
-                         newOnline(friendlyName);
-                     }
-                 }
-                );
-                
-            };
+                Debugger.Break();
+            }
+            pin[0] = gpio.OpenPin(5);
+            pin[1] = gpio.OpenPin(6); //13,19
+            pin[2] = gpio.OpenPin(13);
+            pin[3] = gpio.OpenPin(19);
+            pin[0].Write(GpioPinValue.Low);
+            pin[1].Write(GpioPinValue.Low);
+            pin[2].Write(GpioPinValue.Low);
+            pin[3].Write(GpioPinValue.Low);
+            pin[0].SetDriveMode(GpioPinDriveMode.Output);
+            pin[1].SetDriveMode(GpioPinDriveMode.Output);
+            pin[2].SetDriveMode(GpioPinDriveMode.Output);
+            pin[3].SetDriveMode(GpioPinDriveMode.Output);
+
         }
         private async static void newOnline (int friendlyName)
         {
@@ -70,6 +96,15 @@ namespace iotX_Backend_Test
             string pinX = dMessage["GPIOPin"].ToString();
             string bitX = dMessage["bit"].ToString();
             MessageBody.Add(pinX + "-" + bitX);
+
+            if (bitX=="True")
+            {
+                pin[int.Parse(pinX)-1].Write(GpioPinValue.Low);
+            }
+            else if (bitX=="False")
+            {
+                pin[int.Parse(pinX) - 1].Write(GpioPinValue.High);
+            }
         }
         public async static void sendStatus(string message)
         {
