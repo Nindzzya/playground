@@ -34,8 +34,6 @@ namespace iotX_Backend_Test
                 user.Email = Email;
                 user.Password = Password;
                 user.FullName = Identifer;
-                var request = new UserSignUpRequest { User = user };
-                var response = await quickbloxClient.UsersClient.SignUpUserAsync(request);
                 var loginResponse = await quickbloxClient.AuthenticationClient.ByEmailAsync(user.Email, user.Password);
                 await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, user.Password);
             }
