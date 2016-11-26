@@ -25,13 +25,16 @@ namespace iotX_Backend_Test
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
+        public bool[] x = new bool[8];
         public static ObservableCollection<bool> GPIOStatus = new ObservableCollection<bool>() { false, false, false, false };
         public MainPage()
         {
             this.InitializeComponent();
             MainInstance.Init();
             MainInstance.MessageBody = new System.Collections.ObjectModel.ObservableCollection<string>();
+            MainInstance.Online = new System.Collections.ObjectModel.ObservableCollection<string>();
+            MessageListlv.ItemsSource = MainInstance.MessageBody;
+            OnlineListlv.ItemsSource = MainInstance.Online;
             InitX();
         }
 
@@ -40,14 +43,6 @@ namespace iotX_Backend_Test
             await MainInstance.SignIn("kesavaprasadarul@outlook.com", "95123456");
             MainInstance.startTranmission();
             statusBlock.Text = "Done!";
-        }
-        public void ToggleSwitch(int pin)
-        {
-            Type classType = this.GetType();
-            FieldInfo info = classType.GetField("GPIO"+pin);
-            var obj = info.GetValue(this);
-            (obj as ToggleSwitch).IsOn = !(obj as ToggleSwitch).IsOn;
-        }
-
+        }        
     }
 }

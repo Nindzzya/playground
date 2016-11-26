@@ -10,10 +10,14 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
             <TextBlock x:Name="statusBlock" Text="Not Ready"/>
-            <ToggleSwitch x:Name="GPIO1" IsOn="{x:Bind Path=GPIOStatus[0], Mode=TwoWay}"/>
-            <ToggleSwitch x:Name="GPIO2"/>
-            <ToggleSwitch x:Name="GPIO3"/>
-            <ToggleSwitch x:Name="GPIO4"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ListView x:Name="OnlineListlv" Grid.Row="0"></ListView>
+                <ListView x:Name="MessageListlv" Grid.Row="1"></ListView>
+            </Grid>
         </StackPanel>
     </Grid>
 </Page>

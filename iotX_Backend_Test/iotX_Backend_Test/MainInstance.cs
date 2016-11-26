@@ -7,6 +7,7 @@ using Windows.ApplicationModel.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace iotX_Backend_Test
 {
@@ -17,6 +18,7 @@ namespace iotX_Backend_Test
         public static int recId { get; set; }
         public static PrivateChatManager privateChatManagerX { get; set; }
         public static ObservableCollection<string> MessageBody;
+        public static ObservableCollection<string> Online;
         public static QuickbloxClient quickbloxClient = new QuickbloxClient(Keys.appId, Keys.authKey, Keys.authSecret, Keys.apiEndpoint, Keys.chatEndpoint);
         public static void Init()
         {
@@ -44,16 +46,34 @@ namespace iotX_Backend_Test
                 var friendlyName = messageEventArgs.Message.SenderId;
                 var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
                 var dMessage =(JObject) JsonConvert.DeserializeObject(message);
-                if (dMessage["Type"].ToString() == "setGPIOstatus")
-                {
-                    MainPage.GPIOStatus[int.Parse(dMessage["GPIOPin"].ToString())-1] = (bool)dMessage["bit"];
-                }
                  dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                  {
-                     MessageBody.Add(message);
+                     if (dMessage["Type"].ToString() == "setGPIOstatus")
+                     {
+                         setGPIO(dMessage);
+                     }
+                     if (dMessage["Type"].ToString() == "Init")
+                     {
+                         newOnline(friendlyName);
+                     }
                  }
                 );
+                
             };
+        }
+        private async static void newOnline (int friendlyName)
+        {
+            Online.Add(friendlyName.ToString() + " is Online");
+        }
+        private async static void setGPIO(JObject dMessage)
+        {
+            string pinX = dMessage["GPIOPin"].ToString();
+            string bitX = dMessage["bit"].ToString();
+            MessageBody.Add(pinX + "-" + bitX);
+        }
+        public async static void sendStatus(string message)
+        {
+
         }
 
     }
