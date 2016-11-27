@@ -37,7 +37,7 @@ namespace iotX_Backend_Test
             if (sessionResponse.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 var loginResponse = await quickbloxClient.AuthenticationClient.ByEmailAsync(Email, Password);
-                var y = await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
+                await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
             }
             InitGPIO();
         }
@@ -46,10 +46,10 @@ namespace iotX_Backend_Test
         {
             quickbloxClient.ChatXmppClient.MessageReceived += async (object sender, MessageEventArgs messageEventArgs) =>
            {
-               var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;
-               var friendlyName = messageEventArgs.Message.SenderId;
+               var message = ((System.Xml.Linq.XElement)messageEventArgs.Message.ExtraParameters.NextNode).Value;               
                var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
                var dMessage = (JObject)JsonConvert.DeserializeObject(message);
+               var friendlyName = dMessage["FriendlyName"].ToString();
                await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     if (dMessage["Type"].ToString() == "setGPIOstatus")
@@ -87,9 +87,9 @@ namespace iotX_Backend_Test
             pin[3].SetDriveMode(GpioPinDriveMode.Output);
 
         }
-        private async static void newOnline (int friendlyName)
+        private async static void newOnline (string friendlyName)
         {
-            Online.Add(friendlyName.ToString() + " is Online");
+            Online.Add(friendlyName + " is Online");
         }
         private async static void setGPIO(JObject dMessage)
         {
