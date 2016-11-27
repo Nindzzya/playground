@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System;
 using Windows.Devices.Gpio;
 using System.Diagnostics;
+using System.Threading;
 
 namespace iotX_Backend_Test
 {
@@ -32,6 +33,7 @@ namespace iotX_Backend_Test
 
         public static async Task SignIn(string Email, string Password)
         {
+            InitGPIO();
             dId = null;
             var sessionResponse = await quickbloxClient.AuthenticationClient.CreateSessionBaseAsync();
             if (sessionResponse.StatusCode == System.Net.HttpStatusCode.Created)
@@ -39,7 +41,7 @@ namespace iotX_Backend_Test
                 var loginResponse = await quickbloxClient.AuthenticationClient.ByEmailAsync(Email, Password);
                 await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
             }
-            InitGPIO();
+            
         }
 
         public static async void startTranmission()
@@ -90,6 +92,8 @@ namespace iotX_Backend_Test
         private async static void newOnline (string friendlyName)
         {
             Online.Add(friendlyName + " is Online");
+            await blinkAll(500);
+            await blinkAll(750);
         }
         private async static void setGPIO(JObject dMessage)
         {
@@ -110,7 +114,22 @@ namespace iotX_Backend_Test
         {
 
         }
-
+        public async static Task blinkAll(int ticks)
+        {
+            pin[0].Write(GpioPinValue.Low);
+            pin[1].Write(GpioPinValue.Low);
+            pin[2].Write(GpioPinValue.Low);
+            pin[3].Write(GpioPinValue.Low);
+            Stopwatch x=new Stopwatch();
+            x.Start();
+            while (x.ElapsedMilliseconds < ticks);
+            x.Stop();
+            pin[0].Write(GpioPinValue.High);
+            pin[1].Write(GpioPinValue.High);
+            pin[2].Write(GpioPinValue.High);
+            pin[3].Write(GpioPinValue.High);
+            
+        }
     }
 
 

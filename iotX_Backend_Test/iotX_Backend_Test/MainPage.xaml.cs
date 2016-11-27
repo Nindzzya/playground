@@ -43,6 +43,7 @@ namespace iotX_Backend_Test
             await MainInstance.SignIn("core@iotx.azure.com", "95123456");
             MainInstance.startTranmission();
             statusBlock.Text = "Done!";
+            MainInstance.blinkAll(2000);
         }        
     }
 }
