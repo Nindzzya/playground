@@ -77,10 +77,10 @@ namespace iotX_Backend_Test
             pin[1] = gpio.OpenPin(6); //13,19
             pin[2] = gpio.OpenPin(13);
             pin[3] = gpio.OpenPin(19);
-            pin[0].Write(GpioPinValue.Low);
-            pin[1].Write(GpioPinValue.Low);
-            pin[2].Write(GpioPinValue.Low);
-            pin[3].Write(GpioPinValue.Low);
+            pin[0].Write(GpioPinValue.High);
+            pin[1].Write(GpioPinValue.High);
+            pin[2].Write(GpioPinValue.High);
+            pin[3].Write(GpioPinValue.High);
             pin[0].SetDriveMode(GpioPinDriveMode.Output);
             pin[1].SetDriveMode(GpioPinDriveMode.Output);
             pin[2].SetDriveMode(GpioPinDriveMode.Output);

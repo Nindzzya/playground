@@ -40,7 +40,7 @@ namespace iotX_Backend_Test
 
         private async void InitX()
         {            
-            await MainInstance.SignIn("kesavaprasadarul@outlook.com", "95123456");
+            await MainInstance.SignIn("core@iotx.azure.com", "95123456");
             MainInstance.startTranmission();
             statusBlock.Text = "Done!";
         }        
