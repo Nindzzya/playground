@@ -33,7 +33,7 @@ namespace iotX_Backend_Test
             if (sessionResponse.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 var loginResponse = await quickbloxClient.AuthenticationClient.ByEmailAsync(Email, Password);
-                var y = await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
+                await quickbloxClient.ChatXmppClient.Connect(loginResponse.Result.User.Id, Password);
             }
 
         }

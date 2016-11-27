@@ -54,7 +54,7 @@ namespace iotX_Backend_Test
                     JArray ids = (JArray)item["occupants_ids"];
                     foreach (var id in ids)
                     {
-                        if ((int)id == 19212587)
+                        if ((int)id == 21010378)
                         {
                             dId = item["_id"].ToString();
                         }
@@ -70,7 +70,7 @@ namespace iotX_Backend_Test
         {
             if (dId == null)
                 dId = await createLinktoHub();
-            privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(19212587, dId);
+            privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(21010378, dId);
             privateChatManagerX.MessageReceived += ChatManager_MessageReceived;
             dynamic toSend = new JObject();
             toSend.FriendlyName = user.FullName;
@@ -94,7 +94,7 @@ namespace iotX_Backend_Test
         {
             if (dId == null)
                 dId = await createLinktoHub();
-            privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(19212587, dId);
+            privateChatManagerX = quickbloxClient.ChatXmppClient.GetPrivateChatManager(21010378, dId);
             dynamic toSend = new JObject();
             toSend.FriendlyName = user.FullName;
             toSend.Date = DateTime.Now;
@@ -128,8 +128,8 @@ namespace iotX_Backend_Test
         public static async Task<string> connectToHub()
         {           
             DialogType dialogType = DialogType.Private;
-            var userIds = new List<int>() { 19212587 };
-            var dialogResponse = await quickbloxClient.ChatClient.CreateDialogAsync("", dialogType, "19212587");
+            var userIds = new List<int>() { 21010378 };
+            var dialogResponse = await quickbloxClient.ChatClient.CreateDialogAsync("", dialogType, "21010378");
             return dialogResponse.Result.Id;
         }
     }
