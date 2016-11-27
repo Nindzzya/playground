@@ -36,7 +36,8 @@ namespace iotX_Client_0
         public async void GPIOStatusSet(object sender, RoutedEventArgs e)
         {
             var obj = sender as ToggleButton;
-            MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), obj.IsChecked.GetValueOrDefault());
+            bool checkedState = obj.IsChecked.GetValueOrDefault() == true ? true : false;
+            MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), checkedState);
         }
 
 

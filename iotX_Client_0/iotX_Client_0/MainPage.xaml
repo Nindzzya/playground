@@ -19,10 +19,10 @@
             </Border>
             <Grid Grid.Row="1">
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <ToggleButton Name="GPIO1" Tag="1" Content="Pin 1" MinHeight="72" MinWidth="72" Margin="0,8" Checked="GPIOStatusSet"/>
-                    <ToggleButton Name="GPIO2" Tag="2" Content="Pin 2" MinHeight="72" MinWidth="72" Margin="0,8" Checked="GPIOStatusSet"/>
-                    <ToggleButton Name="GPIO3" Tag="3" Content="Pin 3" MinHeight="72" MinWidth="72" Margin="0,8" Checked="GPIOStatusSet"/>
-                    <ToggleButton Name="GPIO4" Tag="4" Content="Pin 4" MinHeight="72" MinWidth="72" Margin="0,8" Checked="GPIOStatusSet"/>
+                    <ToggleButton Name="GPIO1" Tag="1" Content="Pin 1" MinHeight="72" MinWidth="72" Margin="0,8" Tapped="GPIOStatusSet"/>
+                    <ToggleButton Name="GPIO2" Tag="2" Content="Pin 2" MinHeight="72" MinWidth="72" Margin="0,8" Tapped="GPIOStatusSet"/>
+                    <ToggleButton Name="GPIO3" Tag="3" Content="Pin 3" MinHeight="72" MinWidth="72" Margin="0,8" Tapped="GPIOStatusSet"/>
+                    <ToggleButton Name="GPIO4" Tag="4" Content="Pin 4" MinHeight="72" MinWidth="72" Margin="0,8" Tapped="GPIOStatusSet"/>
                 </StackPanel>
             </Grid>
             <Grid x:Name="LoadGrid" Grid.RowSpan="2" Background="{ThemeResource AppBarBackground}" Opacity="0.9">
