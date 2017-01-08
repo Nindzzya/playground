@@ -8,7 +8,16 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="149,267,0,0" Tapped="Grid_Tapped"/>
-
+        <StackPanel>
+            <TextBlock x:Name="statusBlock" Text="Not Ready"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ListView x:Name="OnlineListlv" Grid.Row="0"></ListView>
+                <ListView x:Name="MessageListlv" Grid.Row="1"></ListView>
+            </Grid>
+        </StackPanel>
     </Grid>
 </Page>
