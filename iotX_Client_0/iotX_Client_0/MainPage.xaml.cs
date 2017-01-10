@@ -39,7 +39,5 @@ namespace iotX_Client_0
             bool checkedState = obj.IsChecked.GetValueOrDefault() == true ? true : false;
             MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), checkedState);
         }
-
-
     }
 }
