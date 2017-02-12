@@ -1,12 +1,10 @@
 ﻿<grammar version="1.0" xml:lang="en-GB" mode="voice" root="main"
 xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
   <rule id ="main" scope ="public">
-    <one-of>
       <item>
         <ruleref uri="#switch"/>
-        <tag> out.switch = rules.switch</tag>
+        <tag> out.switch = rules.switch + rules.state + rules.object;</tag>
       </item>
-    </one-of>
   </rule>
   <rule id="switch">
     <one-of>
@@ -15,13 +13,13 @@ xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
     </one-of>
     <item>
       <ruleref uri="#state"/>
-      <tag>out.state=rules.state();</tag>
+      <tag>out.state=rules.latest();</tag>
     </item>
 
       <item repeat="0-1">at the 
-          <item><ruleref uri="#location"/><tag>out.location=rules.location</tag></item>
+          <item><ruleref uri="#location"/><tag>out.location=rules.latest();</tag></item>
       </item>
-
+    <tag> out.Switch=rules.latest();</tag>
   </rule>
   <rule id="location">
     <one-of>
@@ -39,7 +37,7 @@ xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
     </one-of>
     <item>
       <ruleref uri="#object"/>
-      <tag>out.object=rules.object();</tag>
+      <tag>out.object=rules.latest();</tag>
     </item>
   </rule>
   <rule id="object">

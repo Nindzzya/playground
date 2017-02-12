@@ -50,7 +50,7 @@ namespace iotX_Client_0
         public async void initSpeech()
         {
             var speechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
-            var url = new Uri("ms-appx:///SRGS-Enhanced.grxml").ToString();
+            var url = new Uri("ms-appx:///SRGS-Enhanced V2.grxml").ToString();
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(url));
             var grammarFileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(file);
             speechRecognizer.UIOptions.ExampleText = @"Ex. 'blue background', 'green text'";
@@ -106,35 +106,46 @@ namespace iotX_Client_0
         public void processInfo(SpeechRecognitionResult result)
         {
             var props = result.SemanticInterpretation.Properties;
-            if(checkifKey(props,"switch"))
+            if(checkifKey(props,"state"))
             {
-                var state = props["switch"][0].ToString();
-                if (checkifKey(props, "object"))
+                var setState = props["state"].First();
+                if(checkifKey(props,"object"))
                 {
-                    var obj = props["object"][0].ToString();
-                    switch (state)
+                    var setObject = props["object"].First();
+                    string setLocation = null;
+                    if (checkifKey(props, "location"))
+                        setLocation = props["location"].First();
+
+                    switch (setState)
                     {
 
                         case "on":
-                            switchObj(obj, true,false);
+                            switchObj(setObject, true, false, setLocation);
                             break;
                         case "off":
-                            switchObj(obj, false, false);
+                            switchObj(setObject, false, false, setLocation);
                             break;
                         case "on all":
-                            switchObj(obj, true, true);
+                            switchObj(setObject, true, true, setLocation);
                             break;
                         case "off all":
-                            switchObj(obj, false, true);
+                            switchObj(setObject, false, true, setLocation);
                             break;
                     }
                 }
+                else { new Windows.UI.Popups.MessageDialog("Core Components in speech are missing, please retry.").ShowAsync(); }
+
             }
         }
 
-        public async void switchObj(string obj, bool state, bool isAll)
+        public async void switchObj(string obj, bool state, bool isAll, string location = null)
         {
-            var messageDialogX = new Windows.UI.Popups.MessageDialog(string.Format("{0} {1} turned {2}.",isAll==true?"All":"The", isAll==true?"are":"is",state==true?"on":"off"));
+            var messageDialogX = new Windows.UI.Popups.MessageDialog(string.Format("{0} {1} {2} {3} turned {4}."
+                , isAll == true ? "All" : "The"
+                , isAll == true ? obj + "s" : obj
+                , location == null ? "" : string.Format("at the {0}", location),
+                isAll == true ? "are" : "is",
+                state == true ? "on" : "off"));
             await messageDialogX.ShowAsync();
         }
 
