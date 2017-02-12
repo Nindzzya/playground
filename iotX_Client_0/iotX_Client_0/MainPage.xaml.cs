@@ -28,6 +28,7 @@ namespace iotX_Client_0
         {
             this.InitializeComponent();
             initX();
+            initSpeech();
         }
 
         public async void initX()
@@ -44,6 +45,12 @@ namespace iotX_Client_0
             MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), obj.IsOn);
         }
 
+        public async void initSpeech()
+        {
+            var speechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
+            var storageFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri(@"/SRGS-list.grxml",UriKind.Relative));
+            var grammarFileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(storageFile, "colors");
 
+        }
     }
 }
