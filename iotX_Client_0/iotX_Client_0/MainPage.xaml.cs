@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Media.SpeechRecognition;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.Storage;
 using Windows.UI.Xaml;
@@ -70,6 +71,7 @@ namespace iotX_Client_0
         private async void ContinuousRecognitionSession_ResultGenerated(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession sender, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs args)
         {
             var sResult = args.Result;
+            processInfo(sResult); 
             //if (sResult.SemanticInterpretation.Properties.ContainsKey("TURNON")&&sResult.SemanticInterpretation.Properties["TURNON"][0].ToString() != "...")
             //{
             //    string objectX = sResult.SemanticInterpretation.Properties["TURNON"][0].ToString();
@@ -98,8 +100,52 @@ namespace iotX_Client_0
             //    await messageDialog.ShowAsync();
             //    return;
             //}
-            var messageDialogX = new Windows.UI.Popups.MessageDialog(sResult.Text);
+
+        }
+
+        public void processInfo(SpeechRecognitionResult result)
+        {
+            var props = result.SemanticInterpretation.Properties;
+            if(checkifKey(props,"switch"))
+            {
+                var state = props["switch"][0].ToString();
+                if (checkifKey(props, "object"))
+                {
+                    var obj = props["object"][0].ToString();
+                    switch (state)
+                    {
+
+                        case "on":
+                            switchObj(obj, true,false);
+                            break;
+                        case "off":
+                            switchObj(obj, false, false);
+                            break;
+                        case "on all":
+                            switchObj(obj, true, true);
+                            break;
+                        case "off all":
+                            switchObj(obj, false, true);
+                            break;
+                    }
+                }
+            }
+        }
+
+        public async void switchObj(string obj, bool state, bool isAll)
+        {
+            var messageDialogX = new Windows.UI.Popups.MessageDialog(string.Format("{0} {1} turned {2}.",isAll==true?"All":"The", isAll==true?"are":"is",state==true?"on":"off"));
             await messageDialogX.ShowAsync();
+        }
+
+        public bool checkifKey(IReadOnlyDictionary<string,IReadOnlyList<string>> x,string check)
+        {
+            if (x.ContainsKey(check) && x[check][0].ToString() != "...")
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
         private void ContinuousRecognitionSession_Completed(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession sender, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionCompletedEventArgs args)
