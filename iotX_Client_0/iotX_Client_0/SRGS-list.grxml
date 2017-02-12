@@ -1,62 +1,34 @@
-﻿<grammar version="1.0" xml:lang="en-US" mode="voice" root="toplevel"
+﻿<grammar version="1.0" xml:lang="en-GB" mode="voice" root="toplevel"
 xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
   <rule id="toplevel" scope="public">
     <one-of>
-      <item> <ruleref uri="#PlayCard"/> <tag> out.Card = rules.PlayCard; </tag> </item>
-      <item> <ruleref uri="#MoveCard"/> <tag> out.MoveCard = rules.MoveCard; </tag> </item>
+      <item> <ruleref uri="#TurnOn"/> <tag> out.TurnOn = rules.TurnOn; </tag> </item>
+      <item> <ruleref uri="#TurnOff"/> <tag> out.TurnOff = rules.TurnOff; </tag> </item>
     </one-of>
   </rule>
-  
-  <rule id="TurnOn">
-    <example>turn on light 1</example>
-    <example>please turn on fan 1</example>
 
-    <item repeat="0-1"> please </item>
+  <rule id ="TurnOn">
     <one-of>
-      <item> turn on </item>
+      <item>turn on the</item>
+      <item>put on the</item>
     </one-of>
-    <ruleref uri="#ObjectSelection"/>
-    <tag> out.object=rules.ObjectSelection</tag>
-    <ruleref uri="#Lights"/>
-    <tag> out.object=rules.ObjectSelection</tag>
-    <ruleref uri="#Number"/>
-    <tag> out.Number = rules.Number; </tag>    
-    <item repeat="0-1"> please </item>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNON=rules.latest();</tag>
   </rule>
-  
-    <rule id="TurnOff">
-    <example>turn off light 1</example>
-    <example>please turn off fan 1</example>
 
-    <item repeat="0-1"> please </item>
+  <rule id ="TurnOff">
     <one-of>
-      <item> turn off </item>
+      <item>turn off the</item>
+      <item>put off the</item>
     </one-of>
-    <ruleref uri="#ObjectSelection"/>
-    <tag> out.object=rules.ObjectSelection</tag>
-    <ruleref uri="#Lights"/>
-    <tag> out.object=rules.ObjectSelection</tag>
-    <ruleref uri="#Number"/>
-    <tag> out.Number = rules.Number; </tag>    
-    <item repeat="0-1"> please </item>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNOFF=rules.latest();</tag>
   </rule>
-  
-<rule id ="ObjectSelection">
-  <example>light</example>
-  <example>fan</example>
-<one-of>
-  <item>light <tag> out = light;</tag></item>
-  <item>fan <tag> out = fan;</tag></item>
-</one-of>
-</rule>
-  
-<rule id ="Number">
-  <example>1</example>
-  <example>2</example>
-<one-of>
-  <item>one <tag> out = 1;</tag></item>
-  <item>two <tag> out = 2;</tag></item>
-</one-of>
-</rule>
 
+  <rule id ="Objects">
+    <one-of>
+      <item>Light<tag>out="LIGHT"</tag></item>
+      <item>Fan<tag>out="FAN"</tag></item>
+  </one-of>
+  </rule>
 </grammar>
