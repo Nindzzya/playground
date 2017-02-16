@@ -38,27 +38,48 @@ namespace iotX.Universal
         {
             var response = Encoding.UTF8.GetString(e.Message);
             string[] split = response.Split(' ');
-            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-            dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                switch (split[0].Replace("switch", ""))
-                {
-                    case "1":
-                        switch1.IsChecked = split[1] == "on" ? true : false;
-                        break;
-                    case "2":
-                        switch2.IsChecked = split[1] == "on" ? true : false;
-                        break;
-                    case "3":
-                        switch3.IsChecked = split[1] == "on" ? true : false;
-                        break;
-                    case "4":
-                        switch4.IsChecked = split[1] == "on" ? true : false;
-                        break;
-                }
-            });
+            respondtoResponse(split);            
         }
-
+        private void respondtoResponse(string[] resp)
+        {
+            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+            if (resp[0].Contains("switch"))
+            {
+                dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    switch (resp[0].Replace("switch", ""))
+                    {
+                        case "1":
+                            switch1.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                        case "2":
+                            switch2.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                        case "3":
+                            switch3.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                        case "4":
+                            switch4.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                    }
+                });
+            }
+            else if (resp[0].Contains("fan"))
+            {
+                dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    switch (resp[0].Replace("fan", ""))
+                    {
+                        case "1":
+                            fan1.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                        case "2":
+                            fan2.IsChecked = resp[1] == "on" ? true : false;
+                            break;
+                    }
+                });
+            }
+        }
         private void switch1_Click(object sender, RoutedEventArgs e)
         {
             App.client.MqttMsgPublishReceived -= client_MqttMsgPublishReceived;

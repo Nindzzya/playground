@@ -14,6 +14,8 @@
             <ToggleButton x:Name="switch2" Click="switch1_Click" Content="Switch 2" Margin="4"/>
             <ToggleButton x:Name="switch3" Click="switch1_Click" Content="Switch 3" Margin="4"/>
             <ToggleButton x:Name="switch4" Click="switch1_Click"  Content="Switch 4" Margin="4"/>
+            <ToggleButton x:Name="fan1" Click="switch1_Click"  Content="Fan1" Margin="4"/>
+            <ToggleButton x:Name="fan2" Click="switch1_Click"  Content="Fan2" Margin="4"/>
         </StackPanel>
     </Grid>
 </Page>
