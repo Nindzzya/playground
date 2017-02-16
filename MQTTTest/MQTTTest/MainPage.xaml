@@ -9,8 +9,7 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="updateIpBtn" Content="Update Internal IP" HorizontalAlignment="Center" VerticalAlignment="Center" Click="updateIpBtn_Click"/>
-            
+            <Button x:Name="refreshBtn" Content="Get Data" Click="refreshBtn_Click"></Button>
         </StackPanel>
         <TextBlock x:Name="statusTb" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="Status" TextAlignment="Center"/>
     </Grid>

@@ -8,6 +8,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -31,10 +33,41 @@ namespace MQTTTest
         private Timer ipTimer;
         public MainPage()
         {
+            
             this.InitializeComponent();
             statusTb.Text = "Initializing..";
             ipTimer = new Timer(updateIp, null, (int)TimeSpan.FromHours(1).TotalMilliseconds, Timeout.Infinite);
             updateIp(null);
+            mqttTestX();
+        }
+
+        public async void mqttTestX()
+        {
+            var client = new MqttClient("test.mosquitto.org");
+            client.Connect(Guid.NewGuid().ToString());
+            int a = 1;
+            //float temperature = this.tmp102.Temperature();
+            while (true)
+            {
+                string json = "{ temp : " + a++ + " }";
+                client.Publish("/pi2mqttX/tempX", Encoding.UTF8.GetBytes(json));
+                await Task.Delay(2000);
+            }
+        }
+
+        public async void getmqtt()
+        {
+            var client = new MqttClient("test.mosquitto.org");
+            client.Connect(Guid.NewGuid().ToString());
+            client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+            byte[] x = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
+            client.Subscribe(new string[] { "/pi2mqttX/tempX" }, x);
+        }
+
+        private void Client_MqttMsgPublishReceived(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
+        {
+            byte[] x = e.Message;
+            var y = Encoding.UTF8.GetString(x);
         }
 
         public async void updateIp(object state)
@@ -61,9 +94,9 @@ namespace MQTTTest
       () => { statusTb.Text = "Please check your internet connection or contact admin. Code: " + respType.StatusCode; });
         }
 
-        private async void updateIpBtn_Click(object sender, RoutedEventArgs e)
+        private void refreshBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+            getmqtt();
         }
     }
 }
