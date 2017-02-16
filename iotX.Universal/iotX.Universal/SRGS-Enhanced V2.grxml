@@ -1,0 +1,59 @@
+﻿<grammar version="1.0" xml:lang="en-GB" mode="voice" root="main"
+xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id ="main" scope ="public">
+      <item>
+        <item repeat="0-1">please</item>
+        <item repeat="0-1">can you</item>
+        <one-of>
+          <item>turn</item>
+          <item>put</item>
+        </one-of>
+        <ruleref uri="#state"/>
+        <tag>out.state=rules.latest();</tag>
+        <ruleref uri="#object"/>
+        <tag>out.object=rules.latest();</tag>
+        <item repeat="0-1">
+          <ruleref uri="#number"/>
+          <tag>out.number=rules.latest();</tag>
+        </item>
+        <item repeat ="0-1">at the
+        <ruleref uri="#location"/>
+        <tag>out.location=rules.latest();</tag>
+        </item>
+      </item>
+  </rule>
+
+  <rule id ="state">
+    <one-of>
+      <item>on</item>
+      <item>off</item>
+      <item>on all</item>
+      <item>off all</item>
+    </one-of>
+  </rule>
+
+  <rule id ="object">
+    <one-of>
+      <item>switch</item>
+      <item>fan</item>
+    </one-of>
+  </rule>
+  <rule id="number">
+    <one-of>
+      <item>one</item>
+      <item>two</item>
+      <item>three</item>
+      <item>four</item>
+      <item>five</item>
+    </one-of>
+  </rule>
+  <rule id ="location">
+    <one-of>
+      <item>hall</item>
+      <item>dining room</item>
+      <item>living room</item>
+      <item>kitchen</item>
+    </one-of>
+  </rule>
+  
+</grammar>
