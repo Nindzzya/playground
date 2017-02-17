@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="iotX_Client_0.App"
+    x:Class="Remote_1.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:iotX_Client_0"
-    RequestedTheme="Dark">
+    xmlns:local="using:Remote_1"
+    RequestedTheme="Light">
 
 </Application>

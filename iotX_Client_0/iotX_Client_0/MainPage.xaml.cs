@@ -11,11 +11,11 @@ using Windows.Security.ExchangeActiveSyncProvisioning;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Composition;
+using Microsoft.Graphics.Canvas.Effects;
+using System;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -26,6 +26,8 @@ namespace iotX_Client_0
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        SpriteVisual effectVisual;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -36,18 +38,19 @@ namespace iotX_Client_0
         public async void initX()
         {
             MainInstance.Init();
-            await MainInstance.SignUp("lumia_1", "lumia_1@iotx.com", "95123456");
+            await MainInstance.SignUp("lumia_2core", "lumia_2core@iotx.com", "95123456");
             MainInstance.startTranmission();
-            statusTbl.Text = "Done!";
+            LoadGrid.Visibility = Visibility.Collapsed;
+            //statusTbl.Text = "Done!";
         }
 
         public async void GPIOStatusSet(object sender, RoutedEventArgs e)
         {
-            var obj = sender as ToggleSwitch;
-            MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), obj.IsOn);
+            var obj = sender as ToggleButton;
+            bool checkedState = obj.IsChecked.GetValueOrDefault() == true ? true : false;
+            MainInstance.setGPIOstatus(int.Parse(obj.Tag.ToString()), checkedState);
         }
-
-        public async void initSpeech()
+         public async void initSpeech()
         {
             var speechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
             var url = new Uri("ms-appx:///SRGS-Enhanced V2.grxml").ToString();
@@ -163,5 +166,6 @@ namespace iotX_Client_0
         {
             throw new NotImplementedException();
         }
+
     }
 }
