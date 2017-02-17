@@ -1,0 +1,54 @@
+﻿<grammar version="1.0" xml:lang="en-GB" mode="voice" root="toplevel"
+xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+  <rule id="toplevel" scope="public">
+    <one-of>
+      <item> <ruleref uri="#TurnOn"/> <tag> out.TurnOn = rules.TurnOn; </tag> </item>
+      <item> <ruleref uri="#TurnOff"/> <tag> out.TurnOff = rules.TurnOff; </tag> </item>
+      <item> <ruleref uri="#TurnOffAll"/> <tag> out.TurnOffAll = rules.TurnOffAll; </tag> </item>
+          <item> <ruleref uri="#TurnOnAll"/> <tag> out.TurnOnAll = rules.TurnOnAll; </tag> </item>
+    </one-of>
+  </rule>
+
+  <rule id ="TurnOn">
+    <one-of>
+      <item>turn on the</item>
+      <item>put on the</item>
+    </one-of>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNON=rules.latest();</tag>
+  </rule>
+  
+  <rule id="TurnOffAll">
+    <one-of>
+    <item>turn off all</item>
+    <item>put off all</item>
+    </one-of>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNOFFALL=rules.latest();</tag>
+  </rule>
+
+    <rule id="TurnOnAll">
+    <one-of>
+    <item>turn on all</item>
+    <item>put on all</item>
+    </one-of>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNONALL=rules.latest();</tag>
+  </rule>
+  
+  <rule id ="TurnOff">
+    <one-of>
+      <item>turn off the</item>
+      <item>put off the</item>
+    </one-of>
+    <ruleref uri="#Objects" />
+    <tag> out.TURNOFF=rules.latest();</tag>
+  </rule>
+
+  <rule id ="Objects">
+    <one-of>
+      <item>Light<tag>out="LIGHT"</tag></item>
+      <item>Fan<tag>out="FAN"</tag></item>
+  </one-of>
+  </rule>
+</grammar>

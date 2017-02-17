@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="9a380aa5-f045-4c02-9926-d7e688e048c3" Publisher="CN=Kesava for VS" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="9a380aa5-f045-4c02-9926-d7e688e048c3" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="79e7ede1-7b97-4c51-bc06-9001f1712a2a" Publisher="CN=kesav" Version="1.0.0.0" />
+  <mp:PhoneIdentity PhoneProductId="79e7ede1-7b97-4c51-bc06-9001f1712a2a" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>iotX_Client_0</DisplayName>
-    <PublisherDisplayName>Kesava for VS</PublisherDisplayName>
+    <DisplayName>iotX.Universal</DisplayName>
+    <PublisherDisplayName>kesav</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -14,8 +14,8 @@
     <Resource Language="x-generate" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="iotX_Client_0.App">
-      <uap:VisualElements DisplayName="iotX_Client_0" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="iotX_Client_0" BackgroundColor="transparent">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="iotX.Universal.App">
+      <uap:VisualElements DisplayName="iotX.Universal" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="iotX.Universal" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
