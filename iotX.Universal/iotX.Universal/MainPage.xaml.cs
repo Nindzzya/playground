@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using uPLibrary.Networking.M2Mqtt.Messages;
@@ -9,6 +10,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
+using Windows.Networking.Connectivity;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -27,14 +29,37 @@ namespace iotX.Universal
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public static bool isConnected = false;
         public static string topicName = "/iotX/values";
         public MainPage()
         {
             this.InitializeComponent();
-            App.client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-            byte[] qosSpecifier = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
-            App.client.Subscribe(new string[] {topicName}, qosSpecifier );
-            initSpeech();
+            NetworkInformation_NetworkStatusChanged(null);
+            NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+            if (isConnected)
+            {
+                App.client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+                byte[] qosSpecifier = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
+                App.client.Subscribe(new string[] { topicName }, qosSpecifier);
+            }
+
+           
+            //initSpeech();
+        }
+
+        private void NetworkInformation_NetworkStatusChanged(object sender)
+        {
+            var connection = NetworkInformation.GetConnectionProfiles();
+            foreach (var con in connection)
+            {
+               if(con != null && con.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess);
+                {
+                    isConnected = true;
+                    return;
+                }            
+            }
+            isConnected = false;
+            
         }
 
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -43,43 +68,25 @@ namespace iotX.Universal
             string[] split = response.Split(' ');
             respondtoResponse(split);            
         }
-        private void respondtoResponse(string[] resp)
+        private async void respondtoResponse(string[] resp)
         {
             var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
             if (resp[0].Contains("switch"))
             {
-                dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    switch (resp[0].Replace("switch", ""))
-                    {
-                        case "1":
-                            switch1.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                        case "2":
-                            switch2.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                        case "3":
-                            switch3.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                        case "4":
-                            switch4.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                    }
-                });
+                    ToggleButton switchX = (ToggleButton)FindName(resp[0]);
+                    switchX.IsChecked= resp[1] == "on" ? true : false;
+                });              
+
             }
             else if (resp[0].Contains("fan"))
             {
-                dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+
+               await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    switch (resp[0].Replace("fan", ""))
-                    {
-                        case "1":
-                            fan1.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                        case "2":
-                            fan2.IsChecked = resp[1] == "on" ? true : false;
-                            break;
-                    }
+                    ToggleButton fanX = (ToggleButton)FindName(resp[0]);
+                    fanX.IsChecked = resp[1] == "on" ? true : false;                   
                 });
             }
         }
@@ -91,6 +98,7 @@ namespace iotX.Universal
         }
         private async void publishPost(byte[] send)
         {
+            if(isConnected)
             App.client.Publish(topicName, send);
 
         }
@@ -104,15 +112,9 @@ namespace iotX.Universal
             speechRecognizer.Constraints.Add(grammarFileConstraint);
             var status = await speechRecognizer.CompileConstraintsAsync();
             speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
-            speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
             speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
             await speechRecognizer.ContinuousRecognitionSession.StartAsync(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionMode.Default);
 
-        }
-
-        private void SpeechRecognizer_StateChanged(SpeechRecognizer sender, SpeechRecognizerStateChangedEventArgs args)
-        {
-            var x = 1;
         }
 
         private async void ContinuousRecognitionSession_ResultGenerated(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession sender, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs args)
