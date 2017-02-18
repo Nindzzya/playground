@@ -5,8 +5,10 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using Windows.ApplicationModel.Core;
+using Windows.Devices.Gpio;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.SpeechRecognition;
@@ -42,9 +44,22 @@ namespace iotX.Universal
                 byte[] qosSpecifier = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
                 App.client.Subscribe(new string[] { topicName }, qosSpecifier);
             }
-
-           
             //initSpeech();
+
+            GpioController gpio = GpioController.GetDefault();
+            if (gpio == null)
+                return; // GPIO not available on this system
+
+            // Open GPIO 5
+            using (GpioPin pin = gpio.OpenPin(5))
+            {
+                // Latch HIGH value first. This ensures a default value when the pin is set as output
+                pin.Write(GpioPinValue.High);
+
+                // Set the IO direction as output
+                pin.SetDriveMode(GpioPinDriveMode.Output);
+
+            } // Close pin - will revert to its power-on stat
         }
 
         private void NetworkInformation_NetworkStatusChanged(object sender)
@@ -96,15 +111,15 @@ namespace iotX.Universal
             var send = Encoding.UTF8.GetBytes(((ToggleButton)sender).IsChecked == true ? String.Format("{0} on", senderItem) : String.Format("{0} off", senderItem));
             publishPost(send);
         }
-        private async void publishPost(byte[] send)
+        private void publishPost(byte[] send)
         {
-            if(isConnected)
-            App.client.Publish(topicName, send);
+            if (isConnected)
+                App.client.Publish(topicName, send);
 
         }
         public async void initSpeech()
         {
-            var speechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
+            var speechRecognizer = new SpeechRecognizer();
             var url = new Uri("ms-appx:///SRGS-Enhanced V2.grxml").ToString();
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(url));
             var grammarFileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(file);
@@ -120,10 +135,10 @@ namespace iotX.Universal
         private async void ContinuousRecognitionSession_ResultGenerated(Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession sender, Windows.Media.SpeechRecognition.SpeechContinuousRecognitionResultGeneratedEventArgs args)
         {
             var sResult = args.Result;
-            processInfo(sResult);
+            await processInfo(sResult);
         }
 
-        public void processInfo(SpeechRecognitionResult result)
+        public async Task processInfo(SpeechRecognitionResult result)
         {
             var props = result.SemanticInterpretation.Properties;
             if (checkifKey(props, "state"))
@@ -156,38 +171,38 @@ namespace iotX.Universal
                             break;
                     }
                 }
-                else { new Windows.UI.Popups.MessageDialog("Core Components in speech are missing, please retry.").ShowAsync(); }
+                else { await new Windows.UI.Popups.MessageDialog("Core Components in speech are missing, please retry.").ShowAsync(); }
 
             }
         }
 
-        public async void switchObj(string obj, bool state, bool isAll, string location = null, int number = 0)
+        public void switchObj(string obj, bool state, bool isAll, string location = null, int number = 0)
         {
             switch (obj)
             {
-                case "switch":                    
-                        if(isAll)
-                        {
+                case "switch":
+                    if (isAll)
+                    {
                         publishPost(Encoding.UTF8.GetBytes("switch1 on"));
                         publishPost(Encoding.UTF8.GetBytes("switch2 on"));
                         publishPost(Encoding.UTF8.GetBytes("switch3 on"));
                         publishPost(Encoding.UTF8.GetBytes("switch4 on"));
                         return;
-                        }
-                        switch (number)
-                        {
-                            case 1:
-                                publishPost(Encoding.UTF8.GetBytes("switch1 on"));
-                                return;
-                            case 2:
+                    }
+                    switch (number)
+                    {
+                        case 1:
+                            publishPost(Encoding.UTF8.GetBytes("switch1 on"));
+                            return;
+                        case 2:
                             publishPost(Encoding.UTF8.GetBytes("switch2 on")); return;
-                            case 3:
+                        case 3:
                             publishPost(Encoding.UTF8.GetBytes("switch3 on")); return;
-                            case 4:
+                        case 4:
                             publishPost(Encoding.UTF8.GetBytes("switch4 on")); return;
-                            default:
-                                break;
-                        }
+                        default:
+                            break;
+                    }
 
                     break;
                 case "fan":
