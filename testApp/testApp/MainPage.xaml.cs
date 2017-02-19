@@ -114,7 +114,7 @@ namespace testApp
         private async Task decodeCsv(StorageFile file)
         {
             string contents="";
-            
+            NameList.Clear();
             var buffer = await Windows.Storage.FileIO.ReadBufferAsync(file);
             using (var dataReader = Windows.Storage.Streams.DataReader.FromBuffer(buffer))
             {
@@ -267,7 +267,7 @@ namespace testApp
             {
                 storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("results");
             }
-            StorageFile file = await storageFolder.CreateFileAsync(selectClass.Content.ToString(),CreationCollisionOption.OpenIfExists);
+            StorageFile file = await storageFolder.CreateFileAsync(selectClass.Content.ToString()+".csv",CreationCollisionOption.OpenIfExists);
             string contents;
             var buffer = await Windows.Storage.FileIO.ReadBufferAsync(file);
             using (var dataReader = Windows.Storage.Streams.DataReader.FromBuffer(buffer))
@@ -360,18 +360,29 @@ namespace testApp
 
         private async void fileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
-            StorageFile file = (StorageFile)fileListView.SelectedItem;
-            await decodeCsv(file);
-            fileSelectBorder.Visibility = Visibility.Collapsed;
-            selectClass.Content = classRoom = file.Name.Replace(".csv", "");
+            try
+            {
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+                StorageFile file = (StorageFile)fileListView.SelectedItem;
+                await decodeCsv(file);
+                fileSelectBorder.Visibility = Visibility.Collapsed;
+                selectClass.Content = classRoom = file.Name.Replace(".csv", "");
+            }
+            catch { }
         }
 
 
         private async void SlidableListItem_RightCommandRequested(object sender, EventArgs e)
         {
-            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+            StorageFolder storageFolder =  ApplicationData.Current.LocalFolder;
             await ((StorageFile)((SlidableListItem)sender).DataContext).DeleteAsync();
+            storageFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync("results");
+            try
+            {
+                var file = await storageFolder.GetFileAsync(((StorageFile)((SlidableListItem)sender).DataContext).Name);
+                await file.DeleteAsync();
+            }
+            catch { }
             var x = fileColl.Remove((StorageFile)((SlidableListItem)sender).DataContext);
         }
     }
