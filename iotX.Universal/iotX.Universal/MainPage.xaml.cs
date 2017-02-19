@@ -36,10 +36,11 @@ namespace iotX.Universal
         public MainPage()
         {
             this.InitializeComponent();
-            NetworkInformation_NetworkStatusChanged(null);
+            //NetworkInformation_NetworkStatusChanged(null);
             NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
             if (isConnected)
             {
+                App.client.Connect(Guid.NewGuid().ToString());
                 App.client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
                 byte[] qosSpecifier = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
                 App.client.Subscribe(new string[] { topicName }, qosSpecifier);

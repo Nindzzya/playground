@@ -14,9 +14,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using uPLibrary.Networking.M2Mqtt;
 
-namespace iotX.Universal
+namespace testApp
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -31,9 +30,8 @@ namespace iotX.Universal
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-            
         }
-        public static MqttClient client = new MqttClient("test.mosquitto.org");
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.

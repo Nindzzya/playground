@@ -13,7 +13,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Composition;
-using Microsoft.Graphics.Canvas.Effects;
 using System;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -31,7 +30,7 @@ namespace iotX_Client_0
         public MainPage()
         {
             this.InitializeComponent();
-            //initX();
+            initX();
            initSpeech();
         }
 
