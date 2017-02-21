@@ -80,13 +80,13 @@
             </StackPanel>
 
         </StackPanel>
-        <Grid Grid.Row="2" VerticalAlignment="Center">
+        <Grid Grid.Row="2" VerticalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock x:Name="pCount"
                            Text="0"
                            FontSize="32" 
@@ -95,8 +95,8 @@
                 <TextBlock Text="Present"
                            FontSize="16" 
                            FontWeight="SemiLight"/>
-            </StackPanel>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Center" >
+            </StackPanel>            
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" >
                 <TextBlock x:Name="aCount"
                            Text="0"
                            FontSize="32" 
@@ -106,7 +106,7 @@
                            FontSize="16" 
                            FontWeight="SemiLight"/>
             </StackPanel>
-            <StackPanel Grid.Column="2" HorizontalAlignment="Center" >
+            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" >
                 <TextBlock x:Name="oCount"
                            Text="0"
                            FontSize="32" 
@@ -116,6 +116,10 @@
                            FontSize="16" 
                            FontWeight="SemiLight"/>
             </StackPanel>
+            <Border Height="48" x:Name="moreButton" Tapped="moreButton_Tapped" Background="{ThemeResource AppBarButtonBackgroundPointerOver}" Grid.ColumnSpan="3" VerticalAlignment="Bottom"> 
+                <TextBlock Text="More" TextAlignment="Center" FontSize="16" Foreground="{ThemeResource InkToolbarAccentColorThemeBrush}" VerticalAlignment="Center"></TextBlock>
+            </Border>
+
         </Grid>
         <Border x:Name="fileSelectBorder" Grid.RowSpan="3" Visibility="Collapsed">
             <Border.Background>

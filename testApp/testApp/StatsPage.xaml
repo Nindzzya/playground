@@ -1,0 +1,64 @@
+﻿<Page
+    x:Class="testApp.StatsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:testApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="2.5*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{ThemeResource AppBarBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition/>                
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="C403"
+                           Foreground="{ThemeResource InkToolbarAccentColorThemeBrush}"
+                           FontSize="32"
+                           Margin="12,8"
+                           FontWeight="Light"/>
+                <Button Content="Select Date"                          
+                           Margin="12,0,12,8"
+                           FontWeight="Light"
+                           Foreground="{ThemeResource AppBarButtonForeground}"
+                           FontSize="20" Click="Button_Click"/>                
+            </StackPanel>            
+        </Grid>
+        <Grid Grid.Row="1">
+            <ScrollViewer>
+                <StackPanel>
+                    <Grid Margin="24" MinWidth="250">
+                        <RelativePanel>
+                        <TextBlock Foreground="{ThemeResource InkToolbarAccentColorThemeBrush}" x:Name="pTb" Text="999" FontSize="36"/>
+                        <TextBlock Text="Present" VerticalAlignment="Center" 
+                                   Margin="4,0"
+                                   Foreground="{ThemeResource InkToolbarAccentColorThemeBrush}"
+                                   RelativePanel.AlignBottomWith="pTb"
+                                   RelativePanel.RightOf="pTb"/>
+                        </RelativePanel>
+                        <RelativePanel HorizontalAlignment="Right">
+                            <TextBlock x:Name="aBlock" Text="Absent" RelativePanel.AlignBottomWithPanel="True" 
+                                   Margin="4,0"/>
+                            <TextBlock x:Name="aTb" RelativePanel.RightOf="aBlock" Text="999" FontSize="36"/>                            
+                        </RelativePanel>
+
+                    </Grid>
+                    <ProgressBar Height="8" x:Name="pBar"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Border x:Name="fadeoutBorder" Visibility="Collapsed" Background="Black" Opacity="0.6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.RowSpan="2"/>
+        <CalendarView x:Name="datePicker" 
+                      CalendarViewDayItemChanging="datePicker_CalendarViewDayItemChanging" 
+                      SelectedDatesChanged="datePicker_SelectedDatesChanged"
+                      Visibility="Collapsed"
+                      IsTodayHighlighted="False"                      
+                      Grid.RowSpan="2"/>
+    </Grid>
+</Page>

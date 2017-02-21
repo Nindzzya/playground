@@ -36,6 +36,7 @@ namespace testApp
         public static int countElapse = 1;
         public static string currentDate = DateTime.Now.Date.ToString();
         public static string classRoom = "-1";
+        public static string csvContents;
         public static int[] countS = new int[3];
         public bool isStarted = false;
         public ObservableCollection<StorageFile> fileColl = new ObservableCollection<StorageFile>();
@@ -110,8 +111,29 @@ namespace testApp
                     return 0;
             }
         }
+        public async Task getResultBuffer()
+        {
+            string toWrite = "";
+            StorageFolder storageFolder;
+            try
+            {
+                storageFolder = await ApplicationData.Current.LocalFolder.GetFolderAsync("results");
+            }
+            catch
+            {
+                storageFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("results");
+            }
+            StorageFile file = await storageFolder.CreateFileAsync(selectClass.Content.ToString() + ".csv", CreationCollisionOption.OpenIfExists);
+            string contents;
+            var buffer = await Windows.Storage.FileIO.ReadBufferAsync(file);
+            using (var dataReader = Windows.Storage.Streams.DataReader.FromBuffer(buffer))
+            {
+                contents = dataReader.ReadString(buffer.Length);
+                csvContents = contents;
+            }
+        }
         
-        private async Task decodeCsv(StorageFile file)
+        public async Task decodeCsv(StorageFile file)
         {
             string contents="";
             NameList.Clear();
@@ -119,6 +141,7 @@ namespace testApp
             using (var dataReader = Windows.Storage.Streams.DataReader.FromBuffer(buffer))
             {
                 contents = dataReader.ReadString(buffer.Length);
+                //csvContents = contents;
             }
             contents = contents.Replace("\r", "");
             var List = contents.Split('\n');
@@ -302,6 +325,7 @@ namespace testApp
                 }
                 await new MessageDialog(output).ShowAsync();
             }
+            csvContents = toWrite;
             await Windows.Storage.FileIO.WriteTextAsync(file,toWrite);
             toWrite = "";
         }
@@ -364,9 +388,11 @@ namespace testApp
             {
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
                 StorageFile file = (StorageFile)fileListView.SelectedItem;
-                await decodeCsv(file);
                 fileSelectBorder.Visibility = Visibility.Collapsed;
                 selectClass.Content = classRoom = file.Name.Replace(".csv", "");
+                await decodeCsv(file);
+                await getResultBuffer();
+               
             }
             catch { }
         }
@@ -384,6 +410,12 @@ namespace testApp
             }
             catch { }
             var x = fileColl.Remove((StorageFile)((SlidableListItem)sender).DataContext);
+        }
+
+        private void moreButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Tuple<string, string> toPass = new Tuple<string, string>(classRoom, csvContents);
+            Frame.Navigate(typeof(StatsPage), toPass);
         }
     }
 
