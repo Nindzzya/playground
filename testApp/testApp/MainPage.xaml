@@ -21,7 +21,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>        
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="0" Margin="12">
             <Grid>
                 <TextBlock x:Name="classTb"                         
@@ -52,7 +52,7 @@
                        Text="Hour 1"/>
 
         </StackPanel>
-
+        <TextBlock HorizontalAlignment="Right" Foreground="Gray" Margin="12" VerticalAlignment="Top" Text="Alpha. Kesava Prasad Arul."/>
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Current number"

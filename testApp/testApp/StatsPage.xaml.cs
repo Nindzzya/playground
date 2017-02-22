@@ -111,10 +111,10 @@ namespace testApp
                 foreach(var item in List)
                 {
                     var split = item.Split(',');
-                    if (split[index].Split('-')[0] == presentS)
-                        pNo++;
-                    else if (split[index].Split('-')[0] == absentS)
-                        aNo++;
+                if (split[index].Split('-')[0] == presentS)
+                    pNo++;
+                else if (split[index].Split('-')[0] == absentS)
+                    aNo++;
                 }
                 updateUI();
             
