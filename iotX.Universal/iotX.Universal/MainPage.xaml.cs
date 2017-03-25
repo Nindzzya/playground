@@ -34,7 +34,7 @@ namespace iotX.Universal
             App.client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             byte[] qosSpecifier = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE };
             App.client.Subscribe(new string[] {topicName}, qosSpecifier );
-            initSpeech();
+            //initSpeech();
         }
 
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -96,12 +96,14 @@ namespace iotX.Universal
         }
         public async void initSpeech()
         {
+
             var speechRecognizer = new Windows.Media.SpeechRecognition.SpeechRecognizer();
-            var url = new Uri("ms-appx:///SRGS-Enhanced V2.grxml").ToString();
+            var x = speechRecognizer.CurrentLanguage;
+            var url = new Uri(String.Format("ms-appx:///SRGS-Enhanced-{0}.grxml",x.LanguageTag)).ToString();
             StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(url));
             var grammarFileConstraint = new Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint(file);
             speechRecognizer.Timeouts.EndSilenceTimeout =new TimeSpan(0,0,0,0,400);
-            speechRecognizer.Constraints.Add(grammarFileConstraint);
+            speechRecognizer.Constraints.Add(grammarFileConstraint);            
             var status = await speechRecognizer.CompileConstraintsAsync();
             speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
             speechRecognizer.StateChanged += SpeechRecognizer_StateChanged;
@@ -112,6 +114,8 @@ namespace iotX.Universal
 
         private void SpeechRecognizer_StateChanged(SpeechRecognizer sender, SpeechRecognizerStateChangedEventArgs args)
         {
+            if (args.State == SpeechRecognizerState.SoundEnded)
+                throw new Exception();
             var x = 1;
         }
 
@@ -166,24 +170,49 @@ namespace iotX.Universal
                 case "switch":                    
                         if(isAll)
                         {
-                        publishPost(Encoding.UTF8.GetBytes("switch1 on"));
-                        publishPost(Encoding.UTF8.GetBytes("switch2 on"));
-                        publishPost(Encoding.UTF8.GetBytes("switch3 on"));
-                        publishPost(Encoding.UTF8.GetBytes("switch4 on"));
+                        if (state == true)
+                        {
+                            publishPost(Encoding.UTF8.GetBytes("switch1 on"));
+                            publishPost(Encoding.UTF8.GetBytes("switch2 on"));
+                            publishPost(Encoding.UTF8.GetBytes("switch3 on"));
+                            publishPost(Encoding.UTF8.GetBytes("switch4 on"));
+                        }
+                        else
+                        {
+                            publishPost(Encoding.UTF8.GetBytes("switch1 off"));
+                            publishPost(Encoding.UTF8.GetBytes("switch2 off"));
+                            publishPost(Encoding.UTF8.GetBytes("switch3 off"));
+                            publishPost(Encoding.UTF8.GetBytes("switch4 off"));
+                        }
                         return;
                         }
                         switch (number)
                         {
                             case 1:
+                            if (state == true)
                                 publishPost(Encoding.UTF8.GetBytes("switch1 on"));
+                            else
+                                    publishPost(Encoding.UTF8.GetBytes("switch1 off"));
                                 return;
                             case 2:
-                            publishPost(Encoding.UTF8.GetBytes("switch2 on")); return;
-                            case 3:
-                            publishPost(Encoding.UTF8.GetBytes("switch3 on")); return;
-                            case 4:
-                            publishPost(Encoding.UTF8.GetBytes("switch4 on")); return;
-                            default:
+                            if (state == true)
+                                publishPost(Encoding.UTF8.GetBytes("switch2 on"));
+                            else
+                                publishPost(Encoding.UTF8.GetBytes("switch2 off"));
+                            return;
+                        case 3:
+                            if (state == true)
+                                publishPost(Encoding.UTF8.GetBytes("switch3 on"));
+                            else
+                                publishPost(Encoding.UTF8.GetBytes("switch3 off"));
+                            return;
+                        case 4:
+                            if (state == true)
+                                publishPost(Encoding.UTF8.GetBytes("switch4 on"));
+                            else
+                                publishPost(Encoding.UTF8.GetBytes("switch4 off"));
+                            return;
+                        default:
                                 break;
                         }
 
@@ -191,17 +220,39 @@ namespace iotX.Universal
                 case "fan":
                     if (isAll)
                     {
-                        publishPost(Encoding.UTF8.GetBytes("fan1 on"));
-                        publishPost(Encoding.UTF8.GetBytes("fan2 on"));
+                        if (state == true)
+                        {
+                            publishPost(Encoding.UTF8.GetBytes("fan1 on"));
+                            publishPost(Encoding.UTF8.GetBytes("fan2 on"));
+                        }
+                        else
+                        {
+                            publishPost(Encoding.UTF8.GetBytes("fan1 off"));
+                            publishPost(Encoding.UTF8.GetBytes("fan2 off"));
+                        }
                         return;
                     }
                     switch (number)
                     {
                         case 1:
-                            publishPost(Encoding.UTF8.GetBytes("fan1 on"));
+                            if (state == true)
+                            {
+                                publishPost(Encoding.UTF8.GetBytes("fan1 on"));
+                            }
+                            else
+                            {
+                                publishPost(Encoding.UTF8.GetBytes("fan1 off"));
+                            }
                             return;
                         case 2:
-                            publishPost(Encoding.UTF8.GetBytes("fan2 on"));
+                            if (state == true)
+                            {
+                                publishPost(Encoding.UTF8.GetBytes("fan2 on"));
+                            }
+                            else
+                            {
+                                publishPost(Encoding.UTF8.GetBytes("fan2 off"));
+                            }
                             return;
                         default:
                             break;
