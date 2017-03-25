@@ -100,9 +100,17 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\20170325162917_AccountsDB.cs" />
-    <Compile Include="Migrations\20170325162917_AccountsDB.designer.cs">
-      <DependentUpon>20170325162917_AccountsDB.cs</DependentUpon>
+    <Compile Include="Migrations\20170325173715_ContextDB.cs" />
+    <Compile Include="Migrations\20170325173715_ContextDB.designer.cs">
+      <DependentUpon>20170325173715_ContextDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170325182510_ContextDB1.1.cs" />
+    <Compile Include="Migrations\20170325182510_ContextDB1.1.designer.cs">
+      <DependentUpon>20170325182510_ContextDB1.1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170325190913_ContextDB1.11.cs" />
+    <Compile Include="Migrations\20170325190913_ContextDB1.11.designer.cs">
+      <DependentUpon>20170325190913_ContextDB1.11.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\CoreAssetsModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

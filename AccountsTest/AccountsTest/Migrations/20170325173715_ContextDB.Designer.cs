@@ -8,8 +8,8 @@ using AccountsTest.Core;
 namespace AccountsTest.Migrations
 {
     [DbContext(typeof(CoreAssets))]
-    [Migration("20170325162917_AccountsDB")]
-    partial class AccountsDB
+    [Migration("20170325173715_ContextDB")]
+    partial class ContextDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,8 @@ namespace AccountsTest.Migrations
 
                     b.Property<int>("AccountType");
 
+                    b.Property<string>("Name");
+
                     b.HasKey("Id");
 
                     b.ToTable("Account");
@@ -30,7 +32,7 @@ namespace AccountsTest.Migrations
 
             modelBuilder.Entity("AccountsTest.Core.Transaction", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreationDate");

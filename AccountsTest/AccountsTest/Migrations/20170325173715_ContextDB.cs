@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AccountsTest.Migrations
 {
-    public partial class AccountsDB : Migration
+    public partial class ContextDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,8 @@ namespace AccountsTest.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    AccountType = table.Column<int>(nullable: false)
+                    AccountType = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -24,8 +25,7 @@ namespace AccountsTest.Migrations
                 name: "Transaction",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Id = table.Column<string>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     PayType = table.Column<int>(nullable: false),
