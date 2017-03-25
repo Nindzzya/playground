@@ -26,5 +26,10 @@ namespace AccountsTest
         {
             this.InitializeComponent();
         }
+        public void init()
+        {
+
+
+        }
     }
 }
