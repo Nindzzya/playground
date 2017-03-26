@@ -8,9 +8,10 @@ using AccountsTest.Core;
 namespace AccountsTest.Migrations
 {
     [DbContext(typeof(CoreAssets))]
-    partial class CoreAssetsModelSnapshot : ModelSnapshot
+    [Migration("20170326040125_ContextDB1.11.02")]
+    partial class ContextDB11102
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");

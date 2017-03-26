@@ -25,8 +25,8 @@ namespace AccountsTest
     {
         Core.CoreAssets database = new Core.CoreAssets();
         public List<Core.Account> accountsList= new List<Core.Account>();
-        Core.Account tempAccount = null;
-        Core.Account activeAccount = null;
+        Core.Account tempAccount = new Core.Account();
+        Core.Account activeAccount = new Core.Account();
         ObservableCollection<Core.Account> accountsCollection;
         Core.Transaction tempTransaction = new Core.Transaction();
         public MainPage()
@@ -52,7 +52,7 @@ namespace AccountsTest
             tempAccount.Name = accountNameTb.Text;
             tempAccount.Id = "A" + getDateTag();
             newAccount(tempAccount);
-            tempAccount = null;
+            tempAccount = new Core.Account();
         }
 
         private void accountSelectionCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -70,8 +70,11 @@ namespace AccountsTest
 
         private void accountListLv_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            activeAccount = accountListLv.SelectedItem as Core.Account;
-            transLv.ItemsSource = activeAccount.Transactions;
+            if (accountListLv.SelectedItem != null)
+            {
+                activeAccount = accountListLv.SelectedItem as Core.Account;
+                transLv.ItemsSource = new ObservableCollection<Core.Transaction>(activeAccount.TransactionsAList);
+            }
         }
 
         private void tagSelectionCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -141,12 +144,15 @@ namespace AccountsTest
             tempTransaction.Title = titleTb.Text;
             tempTransaction.Description = descTb.Text;
             tempTransaction.PriceAmount = double.Parse(priceTb.Text);
-            activeAccount.Transactions.Add(tempTransaction);
+            //activeAccount.TransactionList.Add(tempTransaction);
+            activeAccount.TransactionsAList.Add(tempTransaction);
             database.Account.Attach(activeAccount);
             database.Entry(activeAccount).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             database.SaveChanges(true);
             tempTransaction = new Core.Transaction();
-            transLv.ItemsSource = activeAccount.Transactions;
+            transLv.ItemsSource = new ObservableCollection<Core.Transaction>(activeAccount.TransactionsAList);
+
+            //  transLv.ItemsSource = activeAccount.TransactionsAList;
         }
 
         private void datePickerTrans_DateChanged(object sender, DatePickerValueChangedEventArgs e)

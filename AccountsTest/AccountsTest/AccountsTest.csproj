@@ -112,6 +112,14 @@
     <Compile Include="Migrations\20170325190913_ContextDB1.11.designer.cs">
       <DependentUpon>20170325190913_ContextDB1.11.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20170326035856_ContextDB1.11.01.cs" />
+    <Compile Include="Migrations\20170326035856_ContextDB1.11.01.designer.cs">
+      <DependentUpon>20170326035856_ContextDB1.11.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20170326040125_ContextDB1.11.02.cs" />
+    <Compile Include="Migrations\20170326040125_ContextDB1.11.02.designer.cs">
+      <DependentUpon>20170326040125_ContextDB1.11.02.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\CoreAssetsModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,11 +49,30 @@ namespace AccountsTest.Core
     }
     public class Account
     {
+        [NotMapped]
+        public List<Transaction> TransactionsAList { get; set; } = new List<Transaction>();
+
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
         public AccountType AccountType { get; set; }
-        public List<Transaction> Transactions = new List<Transaction>();
+        public string TransactionList
+        {
+            get
+            {
+                return TransactionsAList == null || !TransactionsAList.Any()
+                           ? null
+                           : JsonConvert.SerializeObject(TransactionsAList);
+            }
+
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    TransactionsAList.Clear();
+                else
+                    TransactionsAList = JsonConvert.DeserializeObject<List<Transaction>>(value);
+            }
+        }
         //public Account(string id, string name, AccountType type)
         //{
         //    Id = id;
