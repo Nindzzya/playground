@@ -27,17 +27,17 @@ namespace CGPASorter
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public StorageFile FullList;
+        public StorageFile FullList = null;
         public StorageFile AvailableList;
         public StorageFile UnavailableList;
         public ObservableCollection<Student> FullListing = new ObservableCollection<Student>();
         public ObservableCollection<Student> AvailableListing = new ObservableCollection<Student>();
-        public ObservableCollection<Student> UnavailableListing = new ObservableCollection<Student>();
+        public ObservableCollection<Student> SearchListing = new ObservableCollection<Student>();
         public ObservableCollection<Student> SelectedStudents = new ObservableCollection<Student>();
-
+        public double CGPALimit = 6.5;
         public MainPage()
         {
-            this.InitializeComponent();           
+            this.InitializeComponent();
         }
 
         public async Task<StorageFile> getCSV()
@@ -60,46 +60,59 @@ namespace CGPASorter
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            switch(button.Content)
-            {
-                case "Open Full List":
-                    FullList = await getCSV();
-                    FullListing = new ObservableCollection<Student>(await parseCSV());
-                    break;
-                case "Open Available List":
-                    AvailableList = await getCSV();
-                    AvailableListing = new ObservableCollection<Student>(await parseCSV());
-                    break;
-                case "Open Unavailable List":
-                    UnavailableList = await getCSV();
-                    UnavailableListing = new ObservableCollection<Student>(await parseCSV());
-                    break;
-            }
+            FullList = await getCSV();
+            FullListing = new ObservableCollection<Student>(await parseCSV());
+            FullListView.ItemsSource = FullListing;
+            AvailableListing = new ObservableCollection<Student>(FullListing.Where(x=>x.IsAvailable==true));
         }
 
-        public class Student
-        {
-            public int RecordNo { get; set; }
-            public string RollNo { get; set; }
-            public string Name { get; set; }
-            public float CGPA { get; set; }
-            public bool IsAvailable { get; set; }
-            public void Add(string r, string n, float c)
-            {
-                RollNo = r;
-                Name = n;
-                CGPA = c;
-            }
-        }
+        
 
-        public sealed class StudentMap: CsvClassMap<Student>
+        public sealed class StudentMap : CsvClassMap<Student>
         {
             public StudentMap()
             {
+                Map(x => x.RecordNo);
                 Map(x => x.RollNo);
                 Map(x => x.Name);
                 Map(x => x.CGPA);
+                Map(x => x.IsAvailable);
             }
+        }
+
+        private void QueryBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (QueryBox.Text != "")
+            {
+                var IEnum = AvailableListing.Where((item) => { return item.Name.ToUpper().Contains(QueryBox.Text.ToUpper()); });
+                var list = new List<Student>(IEnum);
+                var IEnum1 = AvailableListing.Where(x => { return x.RollNo.Contains(QueryBox.Text); });
+                foreach (var item in IEnum1) if (!list.Contains(item)) list.Add(item);
+                var IEnum2 = AvailableListing.Where(x => { return x.CGPA.ToString().Contains(QueryBox.Text); });
+                foreach (var item in IEnum2) if (!list.Contains(item)) list.Add(item);
+                searchListView.ItemsSource = list;
+            }
+            else
+            {
+                searchListView.ItemsSource = null;
+            }
+        }
+    }
+
+    public class Student
+    {
+        public int RecordNo { get; set; }
+        public string RollNo { get; set; }
+        public string Name { get; set; }
+        public double CGPA { get; set; }
+        public bool IsAvailable { get; set; }
+        public void Add(string rollNo, string name, float cgpa, int recordNo, bool isAvailable)
+        {
+            RollNo = rollNo;
+            Name = name;
+            CGPA = cgpa;
+            RecordNo = recordNo;
+            IsAvailable = isAvailable;
         }
     }
 }
