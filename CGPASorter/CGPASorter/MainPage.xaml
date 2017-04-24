@@ -8,14 +8,18 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="48"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="12" Grid.Column="0">
-            <Button Content="Open Full List Source" Click="Button_Click"/>
-            <TextBox x:Name="QueryBox" TextChanged="QueryBox_TextChanged"></TextBox>
-            <ListView MaxHeight="400" x:Name="searchListView" ItemsSource="{x:Bind SearchListing}">
+        <Button Content="Open Full List Source" Click="Button_Click"/>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="12" Grid.Column="0">            
+            <TextBox x:Name="QueryBox" MinWidth="250" TextChanged="QueryBox_TextChanged"></TextBox>
+            <ListView MaxHeight="400" x:Name="searchListView" ItemsSource="{x:Bind SearchListing}" SelectionChanged="searchListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:Student">
                         <Grid MinWidth="250" MinHeight="42">
@@ -28,21 +32,27 @@
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>            
         </StackPanel>
-        <ListView x:Name="FullListView" Grid.Column="1" ItemsSource="{x:Bind FullListing}">
+        <ListView x:Name="SelectionView" MaxHeight="500" VerticalAlignment="Center" Grid.Column="1" ItemsSource="{x:Bind SelectedStudents}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Student">
                     <Grid MinWidth="250" MinHeight="42">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
-                            <ColumnDefinition Width="42"></ColumnDefinition>
+                            <ColumnDefinition Width="42"/>
+                            <ColumnDefinition Width="42"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{x:Bind Name}"/>
                         <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind CGPA}"/>
+                        <Button Content="Remove" Grid.Column="2" Click="Button_Click_1"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <StackPanel HorizontalAlignment="Center" Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Text="Average:"/>
+            <TextBlock x:Name="averageTxt"/>
+        </StackPanel>
     </Grid>
 </Page>

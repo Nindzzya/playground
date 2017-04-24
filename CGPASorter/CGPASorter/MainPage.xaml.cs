@@ -61,12 +61,10 @@ namespace CGPASorter
         {
             var button = sender as Button;
             FullList = await getCSV();
-            FullListing = new ObservableCollection<Student>(await parseCSV());
-            FullListView.ItemsSource = FullListing;
+            FullListing = new ObservableCollection<Student>(await parseCSV());            
             AvailableListing = new ObservableCollection<Student>(FullListing.Where(x=>x.IsAvailable==true));
         }
 
-        
 
         public sealed class StudentMap : CsvClassMap<Student>
         {
@@ -90,12 +88,40 @@ namespace CGPASorter
                 foreach (var item in IEnum1) if (!list.Contains(item)) list.Add(item);
                 var IEnum2 = AvailableListing.Where(x => { return x.CGPA.ToString().Contains(QueryBox.Text); });
                 foreach (var item in IEnum2) if (!list.Contains(item)) list.Add(item);
+                list = new List<Student>(list.OrderByDescending(x => x.CGPA));
                 searchListView.ItemsSource = list;
             }
             else
             {
                 searchListView.ItemsSource = null;
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SelectedStudents.Remove(((Button)sender).DataContext as Student);
+            SelectionView.ItemsSource = SelectedStudents;
+            AvailableListing.Add(((Button)sender).DataContext as Student);
+            ComputeAverage();
+        }
+
+        private void searchListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (searchListView.SelectedItem != null)
+            {
+                SelectedStudents.Add(searchListView.SelectedItem as Student);
+                AvailableListing.Remove(searchListView.SelectedItem as Student);
+                QueryBox.Text = "";
+                ComputeAverage();
+            }
+        }
+
+        public void ComputeAverage()
+        {
+            double sum =0;
+            foreach (var item in SelectedStudents)
+                sum += item.CGPA;
+            averageTxt.Text = (sum / SelectedStudents.Count).ToString();
         }
     }
 
