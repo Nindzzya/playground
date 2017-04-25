@@ -35,6 +35,9 @@ namespace CGPASorter
         public ObservableCollection<Student> SearchListing = new ObservableCollection<Student>();
         public ObservableCollection<Student> SelectedStudents = new ObservableCollection<Student>();
         public ObservableCollection<Student> SuggestedStudents = new ObservableCollection<Student>();
+        public Dictionary<int, int> SlotMap = new Dictionary<int, int> { { 1, 4 },{ 2, 3 },{ 3, 2 },{ 4, 1 } };
+        public Dictionary<int, double[]> CGPAMap = new Dictionary<int, double[]>();
+        public double currentAvg = 0.0;
         public double CGPALimit = 6.5;
         public MainPage()
         {
@@ -62,7 +65,8 @@ namespace CGPASorter
         {
             var button = sender as Button;
             FullList = await getCSV();
-            FullListing = new ObservableCollection<Student>(await parseCSV());            
+            FullListing = new ObservableCollection<Student>(await parseCSV());
+            setGroups();
             AvailableListing = new ObservableCollection<Student>(FullListing.Where(x=>x.IsAvailable==true));
         }
 
@@ -81,15 +85,28 @@ namespace CGPASorter
 
         public void SuggestList()
         {
-            double AverageCurrent = double.parse(averageTxt.Text);
+            double AverageCurrent = double.Parse(averageTxt.Text);
 
         }
 
-        public void setGroups
+        public void setGroups()
         {
             double median = 0;
-            var x = new List<Student>(FullListing.OrderByDescending(x=>x.CGPA));
+            var x = new List<Student>(FullListing.OrderByDescending(item => item.CGPA));
             median = (x.Last().CGPA+((x.First().CGPA - x.Last().CGPA)/2));
+            int groupCount = 1;
+            while (groupCount < 5)
+            {
+                var listTemp = x.GetRange(0, x.Count<16?x.Count:16);
+                CGPAMap.Add(groupCount, new double[] {listTemp[0].CGPA,listTemp.Last().CGPA});
+                listTemp.Remove(listTemp.Last());
+                foreach(var item in listTemp)
+                {
+                    FullListing[FullListing.IndexOf(item)].groupId = groupCount;
+                    x.Remove(item);
+                }
+                groupCount++;
+            }
         }
         private void QueryBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -104,18 +121,53 @@ namespace CGPASorter
                 list = new List<Student>(list.OrderByDescending(x => x.CGPA));
                 searchListView.ItemsSource = list;
             }
-            else
+           
+        }
+        public void refreshSuggestions()
+        {
+            if (SelectedStudents.Count < 3)
+                searchListView.ItemsSource = getBlockSuggestions();
+            else if (SelectedStudents.Count == 3) searchListView.ItemsSource = getFinalBlock();
+            else if(SelectedStudents.Count == 4) searchListView.ItemsSource = null;
+            else searchListView.ItemsSource = null;
+        }
+        public List<Student> getFinalBlock()
+        {
+            double sum = 0;
+            foreach (var item in SelectedStudents) sum += item.CGPA;
+            var expectedCGPA = (CGPALimit * 4) - sum;
+            var expectedCGPAMax = (CGPALimit * 4) - sum + 0.6;
+            var expectedCGPAMin = (CGPALimit * 4) - sum - 0.6;
+            List<Student> finalList = new List<Student>();
+            foreach(var item in AvailableListing)
             {
-                searchListView.ItemsSource = null;
+                if (expectedCGPAMax > item.CGPA && expectedCGPAMin <= item.CGPA)
+                    finalList.Add(item);
             }
+            return finalList;
         }
 
+        public List<Student> getBlockSuggestions()
+        {
+            int currentBlock = 1 ;
+            while(currentBlock<5)
+            {
+                var cBlockMax = CGPAMap[currentBlock][0];
+                var cBlockMin = CGPAMap[currentBlock][1];
+                if (currentAvg < cBlockMax && currentAvg >= cBlockMin)
+                    return new List<Student>(AvailableListing.Where(item => item.groupId == SlotMap[currentBlock]));
+                currentBlock++;
+            }
+            return new List<Student>();
+        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             SelectedStudents.Remove(((Button)sender).DataContext as Student);
             SelectionView.ItemsSource = SelectedStudents;
             AvailableListing.Add(((Button)sender).DataContext as Student);
+            AvailableListing = new ObservableCollection<Student>(AvailableListing.OrderByDescending(x => x.CGPA));
             ComputeAverage();
+            refreshSuggestions();
         }
 
         private void searchListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -126,6 +178,7 @@ namespace CGPASorter
                 AvailableListing.Remove(searchListView.SelectedItem as Student);
                 QueryBox.Text = "";
                 ComputeAverage();
+                refreshSuggestions();
             }
         }
 
@@ -134,7 +187,8 @@ namespace CGPASorter
             double sum =0;
             foreach (var item in SelectedStudents)
                 sum += item.CGPA;
-            averageTxt.Text = (sum / SelectedStudents.Count).ToString();
+            currentAvg = (sum / SelectedStudents.Count);
+            averageTxt.Text = currentAvg.ToString();
         }
     }
 
