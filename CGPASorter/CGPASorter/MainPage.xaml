@@ -9,20 +9,29 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition/>
             <RowDefinition Height="48"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button Content="Open Full List Source" Click="Button_Click"/>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="12" Grid.Column="0">            
-            <TextBox x:Name="QueryBox" MinWidth="250" TextChanged="QueryBox_TextChanged"></TextBox>
-            <ListView MaxHeight="400" x:Name="searchListView" ItemsSource="{x:Bind SearchListing}" SelectionChanged="searchListView_SelectionChanged">
-                <ListView.ItemTemplate>
+        <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.ColumnSpan="2" Grid.Row="0"/>
+        <StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Content="Load default CGPA list" Click="Button_Click_3"/>
+            <AutoSuggestBox x:Name="searchListView" 
+                            IsEnabled="False"
+                            FocusEngaged="searchListView_FocusEngaged"
+                            GotFocus="searchListView_GotFocus"
+                            MinWidth="300"
+                            Margin="8"
+                            PlaceholderText="Enter Name,CGPA or Number" 
+                            ItemsSource="{x:Bind SearchListing}"
+                            SuggestionChosen="searchListView_SuggestionChosen" 
+                            TextChanged="searchListView_TextChanged">
+                <AutoSuggestBox.ItemTemplate>
                     <DataTemplate x:DataType="local:Student">
-                        <Grid MinWidth="250" MinHeight="42">
+                        <Grid MinWidth="280" MinHeight="42">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition Width="42"></ColumnDefinition>
@@ -31,13 +40,38 @@
                             <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind CGPA}"/>
                         </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>            
+                </AutoSuggestBox.ItemTemplate>
+            </AutoSuggestBox>
+            <!--<TextBox x:Name="QueryBox" MinWidth="250" VerticalAlignment="Center" MaxHeight="42" TextChanged="QueryBox_TextChanged">-->
+                <!--<TextBox.ContextFlyout>
+                    <Flyout>
+                        <ListView MaxHeight="400" ItemsSource="{x:Bind SearchListing}" SelectionChanged="searchListView_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:Student">
+                                    <Grid MinWidth="250" MinHeight="42">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="42"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{x:Bind Name}"/>
+                                        <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind CGPA}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Flyout>
+                </TextBox.ContextFlyout>-->
+            <!--</TextBox>-->
+            <AppBarButton Icon="OpenFile" Click="Button_Click" VerticalAlignment="Center"  Content="Open File"/>
+
         </StackPanel>
-        <ListView x:Name="SelectionView" MaxHeight="500" VerticalAlignment="Center" Grid.Column="1" ItemsSource="{x:Bind SelectedStudents}">
+        <!--<Button Content="Open Full List Source" Click="Button_Click"/>-->
+        <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48" Grid.Column="0">            
+            <TextBlock Text="Selected Students" FontSize="24" FontWeight="Light"/>
+            <ListView x:Name="SelectionView" MaxHeight="500" ItemsSource="{x:Bind SelectedStudents}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Student">
-                    <Grid MinWidth="250" MinHeight="42">
+                    <Grid MinWidth="350" MinHeight="42">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition Width="42"/>
@@ -45,14 +79,25 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="{x:Bind Name}"/>
                         <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{x:Bind CGPA}"/>
-                        <Button Content="Remove" Grid.Column="2" Click="Button_Click_1"/>
+                        <Button Content="X" Grid.Column="2" Click="Button_Click_1"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel HorizontalAlignment="Center" Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Text="Average:"/>
-            <TextBlock x:Name="averageTxt"/>
         </StackPanel>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="48" Grid.Row="1">
+            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBlock Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" VerticalAlignment="Center" FontSize="24" FontWeight="Light" Text="Current Average:"/>
+                <TextBlock Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" FontSize="72" Margin="12,0" FontWeight="Light" VerticalAlignment="Center" x:Name="averageTxt"/>
+            </StackPanel>
+
+            <StackPanel Margin="0,12,0,0"  HorizontalAlignment="Left" Orientation="Horizontal">
+                <TextBox x:Name="CGPABox" PlaceholderText="Enter the baseline CGPA Score - 6.5 is Default"/>
+                <Button Margin="8,0,0,0" Content="Accept" Click="Button_Click_2"/>
+            </StackPanel>
+            <TextBlock Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" FontWeight="Light" VerticalAlignment="Center" Text="(Please note that the computations for 2nd and 3rd person is based on the median of the entire range and will not depend on the CGPA you set. The final computation will be based on the value set.)" TextWrapping="WrapWholeWords"/>
+
+        </StackPanel>
+
     </Grid>
 </Page>
