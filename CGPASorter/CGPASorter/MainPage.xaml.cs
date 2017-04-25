@@ -34,6 +34,7 @@ namespace CGPASorter
         public ObservableCollection<Student> AvailableListing = new ObservableCollection<Student>();
         public ObservableCollection<Student> SearchListing = new ObservableCollection<Student>();
         public ObservableCollection<Student> SelectedStudents = new ObservableCollection<Student>();
+        public ObservableCollection<Student> SuggestedStudents = new ObservableCollection<Student>();
         public double CGPALimit = 6.5;
         public MainPage()
         {
@@ -78,6 +79,18 @@ namespace CGPASorter
             }
         }
 
+        public void SuggestList()
+        {
+            double AverageCurrent = double.parse(averageTxt.Text);
+
+        }
+
+        public void setGroups
+        {
+            double median = 0;
+            var x = new List<Student>(FullListing.OrderByDescending(x=>x.CGPA));
+            median = (x.Last().CGPA+((x.First().CGPA - x.Last().CGPA)/2));
+        }
         private void QueryBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (QueryBox.Text != "")
@@ -132,6 +145,7 @@ namespace CGPASorter
         public string Name { get; set; }
         public double CGPA { get; set; }
         public bool IsAvailable { get; set; }
+        public int groupId{get;set;} = -1;
         public void Add(string rollNo, string name, float cgpa, int recordNo, bool isAvailable)
         {
             RollNo = rollNo;
