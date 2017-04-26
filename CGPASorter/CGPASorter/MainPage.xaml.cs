@@ -86,7 +86,6 @@ namespace CGPASorter
         public void SuggestList()
         {
             double AverageCurrent = double.Parse(averageTxt.Text);
-
         }
 
         public void setGroups()
@@ -94,19 +93,38 @@ namespace CGPASorter
             double median = 0;
             var x = new List<Student>(FullListing.OrderByDescending(item => item.CGPA));
             median = (x.Last().CGPA + ((x.First().CGPA - x.Last().CGPA) / 2));
-            int groupCount = 1;
-            while (groupCount < 5)
+            var medianH = median + ((x.First().CGPA - median) / 2);
+            var medianL = x.Last().CGPA + ((median - x.Last().CGPA) / 2);
+            CGPAMap.Add(1, new double[] { x.First().CGPA, medianH });
+            CGPAMap.Add(2, new double[] { medianH, median });
+            CGPAMap.Add(3, new double[] { median, medianL });
+            CGPAMap.Add(4, new double[] { medianL, x.Last().CGPA });
+            foreach(var item in FullListing)
             {
-                var listTemp = x.GetRange(0, x.Count < 16 ? x.Count : 16);
-                CGPAMap.Add(groupCount, new double[] { listTemp[0].CGPA, listTemp.Last().CGPA });
-                listTemp.Remove(listTemp.Last());
-                foreach (var item in listTemp)
+                if(item.CGPA>median)
                 {
-                    FullListing[FullListing.IndexOf(item)].groupId = groupCount;
-                    x.Remove(item);
+                    if (item.CGPA >= medianH) item.groupId = 1;
+                    else item.groupId = 2;
                 }
-                groupCount++;
+                else
+                {
+                    if (item.CGPA >= medianL) item.groupId = 3;
+                    else item.groupId = 4;
+                }
             }
+            //int groupCount = 1;
+            //while (groupCount < 5)
+            //{
+            //    var listTemp = x.GetRange(0, x.Count < 16 ? x.Count : 16);
+            //    CGPAMap.Add(groupCount, new double[] { listTemp[0].CGPA, listTemp.Last().CGPA });
+            //    listTemp.Remove(listTemp.Last());
+            //    foreach (var item in listTemp)
+            //    {
+            //        FullListing[FullListing.IndexOf(item)].groupId = groupCount;
+            //        x.Remove(item);
+            //    }
+            //    groupCount++;
+            //}
         }
 
         public void refreshSuggestions()
@@ -143,7 +161,11 @@ namespace CGPASorter
                 var cBlockMax = CGPAMap[currentBlock][0] + 0.01;
                 var cBlockMin = CGPAMap[currentBlock][1];
                 if (currentAvg < cBlockMax && currentAvg >= cBlockMin)
-                    return new List<Student>(AvailableListing.Where(item => item.groupId == SlotMap[currentBlock]));
+                {
+                    var x = new List<Student>(AvailableListing.Where(item => item.groupId == SlotMap[currentBlock]));
+
+                    return x;
+                }
                 currentBlock++;
             }
             return new List<Student>();
