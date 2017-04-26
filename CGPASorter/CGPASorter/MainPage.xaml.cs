@@ -37,6 +37,9 @@ namespace CGPASorter
         public ObservableCollection<Student> SuggestedStudents = new ObservableCollection<Student>();
         public Dictionary<int, int> SlotMap = new Dictionary<int, int> { { 1, 4 }, { 2, 3 }, { 3, 2 }, { 4, 1 } };
         public Dictionary<int, double[]> CGPAMap = new Dictionary<int, double[]>();
+        public bool isOpened = false;
+        public bool SingleSearch = false;
+        public int currentSection = -1;
         public double currentAvg = 0.0;
         public double CGPALimit = 6.5;
         public MainPage()
@@ -66,10 +69,23 @@ namespace CGPASorter
             FullList = await getCSV();
             FullListing = new ObservableCollection<Student>(await parseCSV());
             setGroups();
+            AssignSection();
             AvailableListing = new ObservableCollection<Student>(FullListing.Where(x => x.IsAvailable == true));
             searchListView.IsEnabled = true;
+            toggleSection.IsEnabled = true;
+            isOpened = true;
         }
-
+        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            FullList = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\FullList.csv");
+            FullListing = new ObservableCollection<Student>(await parseCSV());
+            setGroups();
+            AssignSection();
+            AvailableListing = new ObservableCollection<Student>(FullListing.Where(x => x.IsAvailable == true));
+            searchListView.IsEnabled = true;
+            toggleSection.IsEnabled = true;
+            isOpened = true;
+        }
 
         public sealed class StudentMap : CsvClassMap<Student>
         {
@@ -79,7 +95,15 @@ namespace CGPASorter
                 Map(x => x.RollNo);
                 Map(x => x.Name);
                 Map(x => x.CGPA);
-                Map(x => x.IsAvailable);
+            }
+        }
+
+        public void AssignSection()
+        {
+            foreach(var item in FullListing)
+            {
+                var roll = item.RollNo;
+                item.section =int.Parse(roll[13].ToString());
             }
         }
 
@@ -111,44 +135,40 @@ namespace CGPASorter
                     if (item.CGPA >= medianL) item.groupId = 3;
                     else item.groupId = 4;
                 }
-            }
-            //int groupCount = 1;
-            //while (groupCount < 5)
-            //{
-            //    var listTemp = x.GetRange(0, x.Count < 16 ? x.Count : 16);
-            //    CGPAMap.Add(groupCount, new double[] { listTemp[0].CGPA, listTemp.Last().CGPA });
-            //    listTemp.Remove(listTemp.Last());
-            //    foreach (var item in listTemp)
-            //    {
-            //        FullListing[FullListing.IndexOf(item)].groupId = groupCount;
-            //        x.Remove(item);
-            //    }
-            //    groupCount++;
-            //}
+            }          
         }
 
         public void refreshSuggestions()
         {
-            if (SelectedStudents.Count < 3)
-                searchListView.ItemsSource = getBlockSuggestions();
-            else if (SelectedStudents.Count == 3) searchListView.ItemsSource = getFinalBlock();
-            else if (SelectedStudents.Count == 4) searchListView.ItemsSource = null;
-            else searchListView.ItemsSource = null;
-            if (searchListView.ItemsSource != null)
-                searchListView.IsSuggestionListOpen = true;
+                if (SelectedStudents.Count < 3)
+                    searchListView.ItemsSource = getBlockSuggestions();
+                else if (SelectedStudents.Count == 3) searchListView.ItemsSource = getFinalBlock();
+                else if (SelectedStudents.Count == 4) searchListView.ItemsSource = null;
+                else searchListView.ItemsSource = null;
+                if (searchListView.ItemsSource != null)
+                    searchListView.IsSuggestionListOpen = true;
         }
         public List<Student> getFinalBlock()
         {
             double sum = 0;
             foreach (var item in SelectedStudents) sum += item.CGPA;
             var expectedCGPA = (CGPALimit * 4) - sum;
-            var expectedCGPAMax = (CGPALimit * 4) - sum + 0.6;
-            var expectedCGPAMin = (CGPALimit * 4) - sum - 0.6;
+            var expectedCGPAMax = (CGPALimit * 4) - sum + 0.3;
+            var expectedCGPAMin = (CGPALimit * 4) - sum - 0.3;
             List<Student> finalList = new List<Student>();
+            if(!SingleSearch && currentSection!=-1)
             foreach (var item in AvailableListing)
             {
                 if (expectedCGPAMax > item.CGPA && expectedCGPAMin <= item.CGPA)
                     finalList.Add(item);
+            }
+            else
+            {
+                foreach (var item in AvailableListing)
+                {
+                    if (expectedCGPAMax > item.CGPA && expectedCGPAMin <= item.CGPA&&item.section==currentSection)
+                        finalList.Add(item);
+                }
             }
             return finalList;
         }
@@ -160,11 +180,15 @@ namespace CGPASorter
             {
                 var cBlockMax = CGPAMap[currentBlock][0] + 0.01;
                 var cBlockMin = CGPAMap[currentBlock][1];
-                if (currentAvg < cBlockMax && currentAvg >= cBlockMin)
+                if (!SingleSearch && currentSection != -1)
                 {
-                    var x = new List<Student>(AvailableListing.Where(item => item.groupId == SlotMap[currentBlock]));
-
-                    return x;
+                    if (currentAvg < cBlockMax && currentAvg >= cBlockMin)
+                        return new List<Student>(AvailableListing.Where(item => item.groupId == SlotMap[currentBlock]));
+                }
+                else
+                {
+                    if (currentAvg < cBlockMax && currentAvg >= cBlockMin)
+                        return new List<Student>(AvailableListing.Where(item => (item.groupId == SlotMap[currentBlock])&& item.section==currentSection));
                 }
                 currentBlock++;
             }
@@ -196,7 +220,6 @@ namespace CGPASorter
                 SelectedStudents.Add(args.SelectedItem as Student);
                 AvailableListing.Remove(args.SelectedItem as Student);
                 ComputeAverage();
-
                 refreshSuggestions();
             }
         }
@@ -207,6 +230,9 @@ namespace CGPASorter
                 searchListView.Text = "";
             if (searchListView.Text != "")
             {
+                ObservableCollection<Student> AvailableListing;
+                if (SingleSearch && currentSection!=-1) AvailableListing = new ObservableCollection<Student>(this.AvailableListing.Where(x => { return x.section == currentSection; }));
+                else AvailableListing = new ObservableCollection<Student>(this.AvailableListing);
                 var IEnum = AvailableListing.Where((item) => { return item.Name.ToUpper().Contains(searchListView.Text.ToUpper()); });
                 var list = new List<Student>(IEnum);
                 var IEnum1 = AvailableListing.Where(x => { return x.RollNo.Contains(searchListView.Text); });
@@ -240,13 +266,26 @@ namespace CGPASorter
             }
         }
 
-        private async void Button_Click_3(object sender, RoutedEventArgs e)
+
+
+        private void SelectionView_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
-            FullList = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\FullList.csv");
-            FullListing = new ObservableCollection<Student>(await parseCSV());
-            setGroups();
-            AvailableListing = new ObservableCollection<Student>(FullListing.Where(x => x.IsAvailable == true));
-            searchListView.IsEnabled = true;
+            if (SelectionView.Items.Count == 1)
+                currentSection = (SelectionView.Items.First() as Student).section;
+            if (SelectionView.Items.Count == 0)
+                currentSection = -1;
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            SingleSearch = ((ToggleSwitch)sender).IsOn;
+            //if(SingleSearch)
+            //{
+            //    foreach (var item in SelectedStudents)
+            //        if (item.section != currentSection)
+            //            SelectedStudents.Remove(item);
+            //}
+            refreshSuggestions();
         }
     }
     public class Student
@@ -255,8 +294,9 @@ namespace CGPASorter
         public string RollNo { get; set; }
         public string Name { get; set; }
         public double CGPA { get; set; }
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; } = true;
         public int groupId{get;set;} = -1;
+        public int section { get; set; } = -1;
         public void Add(string rollNo, string name, float cgpa, int recordNo, bool isAvailable)
         {
             RollNo = rollNo;

@@ -68,7 +68,7 @@
         <!--<Button Content="Open Full List Source" Click="Button_Click"/>-->
         <StackPanel Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="48" Grid.Column="0">            
             <TextBlock Text="Selected Students" FontSize="24" FontWeight="Light"/>
-            <ListView x:Name="SelectionView" MaxHeight="500" ItemsSource="{x:Bind SelectedStudents}">
+            <ListView x:Name="SelectionView" ContainerContentChanging="SelectionView_ContainerContentChanging" MaxHeight="500" ItemsSource="{x:Bind SelectedStudents}">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:Student">
                     <Grid MinWidth="350" MinHeight="42">
@@ -95,8 +95,8 @@
                 <TextBox x:Name="CGPABox" PlaceholderText="Enter the baseline CGPA Score - 6.5 is Default"/>
                 <Button Margin="8,0,0,0" Content="Accept" Click="Button_Click_2"/>
             </StackPanel>
-            <TextBlock Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" FontWeight="Light" VerticalAlignment="Center" Text="(Please note that the computations for 2nd and 3rd person is based on the median of the entire range and will not depend on the CGPA you set. The final computation will be based on the value set.)" TextWrapping="WrapWholeWords"/>
-
+            <TextBlock Margin="0,8,0,0" Foreground="{ThemeResource SystemControlBackgroundAccentBrush}" FontWeight="Light" VerticalAlignment="Center" Text="(Please note that the computations for 2nd and 3rd person is based on the median of the entire range and will not depend on the CGPA you set. The final computation will be based on the value set.)" TextWrapping="WrapWholeWords"/>
+            <ToggleSwitch x:Name="toggleSection" IsEnabled="False" Margin="0,12,0,0" Header="Confine search to Section of first student" OffContent="All Sections" OnContent="One Section" Toggled="ToggleSwitch_Toggled"></ToggleSwitch>
         </StackPanel>
 
     </Grid>
