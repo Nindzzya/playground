@@ -8,6 +8,16 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button Content="New Student" Click="Button_Click"/>
+        <StackPanel>
+            <Button Content="New Student" Click="Button_Click"/>
+            <Button Content="AddClass" Click="Button_Click_1"/>
+        </StackPanel>
+        <GridView ItemsSource="{x:Bind Numbers}">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Button Height="24" Width="24" Content="{x:Bind}"/>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </Page>

@@ -24,6 +24,7 @@ namespace UMS_Alpha
     public sealed partial class MainPage : Page
     {
         List<Student> students = new List<Student>();
+        List<int> Numbers = new List<int>();
         public MainPage()
         {
             this.InitializeComponent();
@@ -46,6 +47,11 @@ namespace UMS_Alpha
             stkPanel.Children.Add(AcceptBtn);
             dialog.Content = stkPanel;
             var result = await dialog.ShowAsync();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
