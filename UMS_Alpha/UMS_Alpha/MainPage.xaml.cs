@@ -30,22 +30,8 @@ namespace UMS_Alpha
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ContentDialog dialog = new ContentDialog();
-            TextBox ntxtBox = new TextBox();
-            TextBox rtxtBox = new TextBox();
-            Button AcceptBtn = new Button();
-            AcceptBtn.Content = "Accept";
-            AcceptBtn.Click += (s,ex)=> {
-                students.Add(new Student(ntxtBox.Text, rtxtBox.Text));
-                dialog.Hide();
-            };
-            StackPanel stkPanel = new StackPanel();
-            stkPanel.Children.Add(ntxtBox);
-            stkPanel.Children.Add(rtxtBox);
-            stkPanel.Children.Add(AcceptBtn);
-            dialog.Content = stkPanel;
-            var result = await dialog.ShowAsync();
-        }
+         {
+             
+         }
     }
 }
