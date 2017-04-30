@@ -27,13 +27,7 @@ namespace UMS_Alpha.Core.Academic
             }
             public Student(string name, string rollNo)
             {
-                Name = name;
-                RollNo = rollNo;
-                if (rollNo.Substring(3, 2) == "EN") DegreeType = DegreeType.Engineering;
-                YearJoined = 2000 + int.Parse(rollNo.Substring(11, 2));
-                EnggBranch = decodeBranch(rollNo.Substring(8, 3));
-                NumberInClass = int.Parse(rollNo.Substring(14, 2));
-                Section = int.Parse(rollNo[13].ToString());
+
             }
 
 

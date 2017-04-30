@@ -15,6 +15,7 @@ namespace UMS_Alpha.Core.Academic
             public string ClassCode { get; set; }//
             public ClassBranch AssociatedBranch { get; set; }
             public List<Student> RegisteredStudents { get; set; }//
+            public List<int> RegisteredRollNos {get; set;}
             public ClassType Type { get; set; }//
             public int Credit { get; set; }//
             public int RegisteredCount
@@ -26,14 +27,7 @@ namespace UMS_Alpha.Core.Academic
             }
             public Class(string classTitle, string classCode,int credit, List<Student> StudentsList, ClassType type)
             {
-                //Initalizer
-                ClassTitle = classTitle;
-                ClassCode = classCode;
-                RegisteredStudents = StudentsList;
-                Credit = credit;
-                Type = type;
-                var BranchClassifier = classCode.Substring(0, 3);
-                AssociatedBranch = decodeBranch(BranchClassifier);
+               
             }
 
             private ClassBranch decodeBranch(string branchClassifier)
